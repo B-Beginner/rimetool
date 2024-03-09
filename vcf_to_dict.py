@@ -1,8 +1,15 @@
 from pypinyin import lazy_pinyin
+import argparse
 
-# 这是一个将联系人文件(.vcf)文件转化为rime词库的小工具
+
+# 读取文件
+parser = argparse.ArgumentParser(description='Process a .vcf file.') # 创建一个解析器
+parser.add_argument('file', help='The .vcf file to process') # 添加一个命令行参数
+args = parser.parse_args()# 解析命令行参数
+
+
 # 从vcf文件中提取联系人姓名
-with open('contacts.vcf', 'r') as infile, open('contacts_output.txt', 'w') as outfile:
+with open(args.file, 'r') as infile, open('contacts_extracted.txt', 'w') as outfile:
     # 遍历输入文件的每一行
     for line in infile:
         # 检查行是否以'FN:'开头
