@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     # 以下为必需参数
-    name='rimetools',  # 模块名
+    name='rimetool',  # 模块名
     version='0.0.1',  # 当前版本
     description='rime输入法相关工具',  # 简短描述
     py_modules=["vcf_to_dict"], # 单文件模块写法
@@ -15,7 +15,7 @@ setup(
     author='whitewatercn', # 作者名
     author_email='whitewatercn@outlook.com', # 作者邮箱
     classifiers=[
-        'Development Status :: Alpha',  # 当前开发进度等级（测试版，正式版等）
+        'Development Status :: 3 - Alpha',  # 当前开发进度等级（测试版，正式版等）
 
         'Intended Audience :: Developers', # 模块适用人群
         'Topic :: Software Development :: Build Tools', # 给模块加话题标签
@@ -45,7 +45,7 @@ setup(
     # data_files=[('my_data', ['data/data_file'])], # 类似package_data, 但指定不在当前包目录下的文件
     entry_points={  # 新建终端命令并链接到模块函数
         'console_scripts': [
-            'sample=sample:main',
+            'rimetool=rimetool:main',
         ],
         },
         project_urls={  # 项目相关的额外链接
