@@ -1,15 +1,11 @@
 from pypinyin import lazy_pinyin
 import argparse
 
-def main():
-    `# 读取文件
-    parser = argparse.ArgumentParser(description='Process a .vcf file.') # 创建一个解析器
-    parser.add_argument('file', help='The .vcf file to process') # 添加一个命令行参数
-    args = parser.parse_args()# 解析命令行参数
+def main(vcf_file):
 
 
     # 从vcf文件中提取联系人姓名
-    with open(args.file, 'r') as infile, open('contacts_extracted.txt', 'w') as outfile:
+    with open(vcf_file, 'r') as infile, open('contacts_extracted.txt', 'w') as outfile:
         # 遍历输入文件的每一行
         for line in infile:
             # 检查行是否以'FN:'开头
@@ -21,7 +17,7 @@ def main():
 
 
     # 去掉联系人姓名中的空格
-    with open('contacts_output.txt', 'r') as infile, open('contacts_without_blank.txt', 'w') as outfile:
+    with open('contacts_extracted.txt', 'r') as infile, open('contacts_without_blank.txt', 'w') as outfile:
         # 遍历输入文件的每一行
         for line in infile:
             # 删除行尾的换行符
