@@ -1,7 +1,6 @@
 from pypinyin import lazy_pinyin
-import argparse
 
-def main(vcf_file):
+def vcf_to_dict(vcf_file):
 
 
     # 从vcf文件中提取联系人姓名
@@ -48,4 +47,4 @@ def main(vcf_file):
             outfile.write(new_line)
 
 if __name__ == "__main__":
-    main()
+    vcf_to_dict()

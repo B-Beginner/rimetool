@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 setup(
     # 以下为必需参数
     name='rimetool',  # 模块名
-    version='0.0.1',  # 当前版本
+    version='0.0.5',  # 当前版本
     description='rime输入法相关工具',  # 简短描述
     py_modules=["rimetool"], # 单文件模块写法
     
@@ -35,11 +35,12 @@ setup(
 			  'input method editor tool',
 			  'python'],  # 模块的关键词，使用空格分割
     install_requires=['pypinyin',
-					  'argparse'], # 依赖模块
+					  'click',
+					  'tools'], # 依赖模块
     python_requires='>=3',  # 模块支持的Python版本
     entry_points={  # 新建终端命令并链接到模块函数
         'console_scripts': [
-            'rimetool=rimetool:main',
+            'rimetool=rimetool.rimetool:main',
         ],
         },
         project_urls={  # 项目相关的额外链接
