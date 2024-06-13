@@ -10,9 +10,21 @@
 
 
 
-# 示例（以.vcf转换为例）
+# 安装
 
-`sample_input`中的`vcf_sample.vcf`是一个小例子，里面的内容为
+```
+pip install rimetool
+```
+
+
+
+# 使用
+
+以`sample_input`中的`vcf_sample.vcf`为例，这是macOS导出的通讯录，我们希望将其中的名字转换成rime词库，从而实现某些国产输入法导入通讯录的功能
+
+
+
+里面的内容为
 
 ```
 BEGIN:VCARD
@@ -47,7 +59,7 @@ END:VCARD
 rimetool --input-path sample_input/vcf_sample.vcf --tool vcf
 ```
 
-你将在`rimetool_output`文件夹下找到`vcf_mycontacts.dict.yaml`，内容为
+你将在执行命令时所在路径的`rimetool_output`文件夹找到`vcf_mycontacts.dict.yaml`，内容为
 
 ```
 # 生成工具 https://github.com/whitewatercn/rimetools
