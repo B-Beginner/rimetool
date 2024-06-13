@@ -4,4 +4,3 @@ dist/
 __pycache__/
 .DS_Store
 rimetool_cache/
-rimetool_output/
