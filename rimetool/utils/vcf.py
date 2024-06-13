@@ -1,11 +1,19 @@
+import os
 from pypinyin import lazy_pinyin
+from datetime import datetime
 
-def vcf_to_dict(vcf_file):
 
+
+def main(vcf_file):
+    current_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+
+    open(f'./rimetool_cache/vcf_cache_contacts_extracted_{current_time}.txt', 'w').close()
+    open(f'./rimetool_cache/vcf_cache_contacts_without_blank_{current_time}.txt', 'w').close()    
 
     # 从vcf文件中提取联系人姓名
-    with open(vcf_file, 'r') as infile, open('contacts_extracted.txt', 'w') as outfile:
+    with open(vcf_file, 'r') as infile, open(f'./rimetool_cache/vcf_cache_contacts_extracted_{current_time}.txt', 'w') as outfile:
         # 遍历输入文件的每一行
+
         for line in infile:
             # 检查行是否以'FN:'开头
             if line.startswith('FN:'):
@@ -16,7 +24,8 @@ def vcf_to_dict(vcf_file):
 
 
     # 去掉联系人姓名中的空格
-    with open('contacts_extracted.txt', 'r') as infile, open('contacts_without_blank.txt', 'w') as outfile:
+
+    with open(f'./rimetool_cache/vcf_cache_contacts_extracted_{current_time}.txt', 'r') as infile, open(f'./rimetool_cache/vcf_cache_contacts_without_blank_{current_time}.txt', 'w') as outfile:
         # 遍历输入文件的每一行
         for line in infile:
             # 删除行尾的换行符
@@ -34,8 +43,13 @@ def vcf_to_dict(vcf_file):
                 outfile.write(line + '\n')
 
     # 转化为rime词典格式
-    with open('contacts_without_blank.txt', 'r') as infile, open('mycontacts.dict.yaml', 'w') as outfile:
+    with open(f'./rimetool_cache/vcf_cache_contacts_without_blank_{current_time}.txt', 'r') as infile, open(f'./rimetool_output/vcf_mycontacts.dict.yaml', 'w+') as outfile:
         # 遍历输入文件的每一行
+        outfile.write(
+			"# 生成工具 https://github.com/whitewatercn/rimetools\n" +
+			"# 生成时间 " + current_time + "\n" +
+			"---\n"
+		)
         for line in infile:
             # 删除行尾的换行符
             line = line.rstrip('\n')
@@ -45,6 +59,8 @@ def vcf_to_dict(vcf_file):
             new_line = line + '\t' + pinyin + '\t1\n'
             # 将新的行写入输出文件
             outfile.write(new_line)
+        outfile.seek(0)
+
 
 if __name__ == "__main__":
-    vcf_to_dict()
+    main()

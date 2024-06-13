@@ -3,4 +3,5 @@ build/
 dist/
 __pycache__/
 .DS_Store
-.gitignore
+rimetool_cache/
+rimetool_output/
