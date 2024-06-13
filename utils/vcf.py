@@ -1,17 +1,21 @@
 import os
 from pypinyin import lazy_pinyin
+from datetime import datetime
+
+
 
 def main(vcf_file):
-    if not os.path.isfile('./rimetool_cache/contacts_extracted.txt'):
-        open('./rimetool_cache/contacts_extracted.txt', 'w').close()
-    if not os.path.isfile('./rimetool_cache/contacts_without_blank.txt'):
-        open('./rimetool_cache/contacts_extracted.txt', 'w').close()    
-    if not os.path.isfile('./rimetool_cache/mycontacts.dict.yaml.txt'):
-        open('./rimetool_cache/contacts_extracted.txt', 'w').close()
+    current_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 
+    if not os.path.isfile(f'./rimetool_cache/vcf_cache_contacts_extracted_{current_time}.txt'):
+        open(f'./rimetool_cache/vcf_cache_contacts_extracted_{current_time}.txt', 'w').close()
+    if not os.path.isfile(f'./rimetool_cache/vcf_cache_contacts_without_blank_{current_time}.txt'):
+        open(f'./rimetool_cache/vcf_cache_contacts_without_blank_{current_time}.txt', 'w').close()    
+    if not os.path.isfile(f'./rimetool_cache/vcf_cache_mycontacts_{current_time}.dict.yaml.txt'):
+        open(f'./rimetool_cache/vcf_cache_mycontacts_{current_time}.dict.yaml', 'w').close()
 
     # 从vcf文件中提取联系人姓名
-    with open(vcf_file, 'r') as infile, open('./rimetool_cache/contacts_extracted.txt', 'w') as outfile:
+    with open(vcf_file, 'r') as infile, open(f'./rimetool_cache/vcf_cache_contacts_extracted_{current_time}.txt', 'w') as outfile:
         # 遍历输入文件的每一行
         for line in infile:
             # 检查行是否以'FN:'开头
@@ -24,7 +28,7 @@ def main(vcf_file):
 
     # 去掉联系人姓名中的空格
 
-    with open(r'./rimetool_cache/contacts_extracted.txt', 'r') as infile, open(r'./rimetool_cache/contacts_without_blank.txt', 'w') as outfile:
+    with open(f'./rimetool_cache/vcf_cache_contacts_extracted_{current_time}.txt', 'r') as infile, open(f'./rimetool_cache/vcf_cache_contacts_without_blank_{current_time}.txt', 'w') as outfile:
         # 遍历输入文件的每一行
         for line in infile:
             # 删除行尾的换行符
@@ -42,7 +46,7 @@ def main(vcf_file):
                 outfile.write(line + '\n')
 
     # 转化为rime词典格式
-    with open(r'./rimetool_cache/contacts_without_blank.txt', 'r') as infile, open(r'./rimetool_cache/mycontacts.dict.yaml', 'w+') as outfile:
+    with open(f'./rimetool_cache/vcf_cache_contacts_without_blank_{current_time}.txt', 'r') as infile, open(f'./rimetool_cache/vcf_cache_mycontacts_{current_time}.dict.yaml', 'w+') as outfile:
         # 遍历输入文件的每一行
         for line in infile:
             # 删除行尾的换行符
