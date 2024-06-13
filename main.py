@@ -1,5 +1,6 @@
 import os
 import utils.vcf as vcf
+import utils.singleword as singleword
 
 def get_args_parser(add_help=True):
 	import argparse
@@ -12,7 +13,7 @@ def get_args_parser(add_help=True):
 		required=True,
 		choices=[
 			'vcf',
-		   'test',
+		   'singleword',
 		   'hello'],
 		type=str, 
 		help='选择工具')
@@ -26,16 +27,15 @@ def main(args):
 		os.makedirs('./rimetool_output')
 
 	if args.tool == 'vcf':
-		outtext = vcf.main(args.input_path)
-		with open(os.path.join(args.output_path ,'vcf_output.dict.yaml'), 'w') as outfile:
-			outfile.write(str(outtext))
-		# print(output)
-	elif args.tool == 'test':
-		print(x-y)
+		vcf.main(args.input_path)
+	elif args.tool == 'singleword':
+		singleword.main(args.input_path)
 	elif args.tool == 'hello':
 		print(x*y)
 	else:
 		print('这里有问题')
+	
+
 
 if __name__ == "__main__":
 	args = get_args_parser().parse_args()

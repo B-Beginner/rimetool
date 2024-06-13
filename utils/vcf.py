@@ -7,16 +7,13 @@ from datetime import datetime
 def main(vcf_file):
     current_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 
-    if not os.path.isfile(f'./rimetool_cache/vcf_cache_contacts_extracted_{current_time}.txt'):
-        open(f'./rimetool_cache/vcf_cache_contacts_extracted_{current_time}.txt', 'w').close()
-    if not os.path.isfile(f'./rimetool_cache/vcf_cache_contacts_without_blank_{current_time}.txt'):
-        open(f'./rimetool_cache/vcf_cache_contacts_without_blank_{current_time}.txt', 'w').close()    
-    if not os.path.isfile(f'./rimetool_cache/vcf_cache_mycontacts_{current_time}.dict.yaml.txt'):
-        open(f'./rimetool_cache/vcf_cache_mycontacts_{current_time}.dict.yaml', 'w').close()
+    open(f'./rimetool_cache/vcf_cache_contacts_extracted_{current_time}.txt', 'w').close()
+    open(f'./rimetool_cache/vcf_cache_contacts_without_blank_{current_time}.txt', 'w').close()    
 
     # 从vcf文件中提取联系人姓名
     with open(vcf_file, 'r') as infile, open(f'./rimetool_cache/vcf_cache_contacts_extracted_{current_time}.txt', 'w') as outfile:
         # 遍历输入文件的每一行
+
         for line in infile:
             # 检查行是否以'FN:'开头
             if line.startswith('FN:'):
@@ -46,8 +43,13 @@ def main(vcf_file):
                 outfile.write(line + '\n')
 
     # 转化为rime词典格式
-    with open(f'./rimetool_cache/vcf_cache_contacts_without_blank_{current_time}.txt', 'r') as infile, open(f'./rimetool_cache/vcf_cache_mycontacts_{current_time}.dict.yaml', 'w+') as outfile:
+    with open(f'./rimetool_cache/vcf_cache_contacts_without_blank_{current_time}.txt', 'r') as infile, open(f'./rimetool_output/vcf_mycontacts.dict.yaml', 'w+') as outfile:
         # 遍历输入文件的每一行
+        outfile.write(
+			"# 生成工具 https://github.com/whitewatercn/rimetools\n" +
+			"# 生成时间 " + current_time + "\n" +
+			"---\n"
+		)
         for line in infile:
             # 删除行尾的换行符
             line = line.rstrip('\n')
@@ -58,8 +60,7 @@ def main(vcf_file):
             # 将新的行写入输出文件
             outfile.write(new_line)
         outfile.seek(0)
-        outtext = outfile.read()
-    return outtext
+
 
 if __name__ == "__main__":
     main()
