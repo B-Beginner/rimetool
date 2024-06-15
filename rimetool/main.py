@@ -26,10 +26,10 @@ def main():
 	parser = get_args_parser()
 	args = parser.parse_args()
 	
-	if not os.path.exists('./rimetool_cache'):
-		os.makedirs('./rimetool_cache')
-	if not os.path.exists('./rimetool_output'):
-		os.makedirs('./rimetool_output')
+	# if not os.path.exists('./rimetool_cache'):
+		# os.makedirs('./rimetool_cache')
+	# if not os.path.exists('./rimetool_output'):
+		# os.makedirs('./rimetool_output')
 
 	if args.tool == 'vcf':
 		vcf.main(args.input_path)

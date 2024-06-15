@@ -1,0 +1,7 @@
+# 生成工具 https://github.com/whitewatercn/rimetools
+# 生成时间 2024-06-14_15-52-36
+---
+BEGIN:VCARD	BEGIN:VCARD	1
+VERSION:3.0	VERSION:3.0	1
+PRODID:-//Apple Inc.//macOS 14.5//EN	PRODID:-//Apple Inc.//macOS 14.5//EN	1
+N:apple;;;;	N:apple;;;;	1
