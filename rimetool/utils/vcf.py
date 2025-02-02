@@ -6,9 +6,9 @@ def main(vcf_file):
     current_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 
     # 从vcf文件中提取联系人姓名
-    with open(vcf_file, 'r') as infile, open(f'./vcf_mycontacts.dict.yaml.txt', 'w') as outfile:
+    with open(vcf_file, 'r') as infile, open(f'./contact_output.dict.yaml', 'w') as outfile:
         outfile.write(
-            "# 生成工具 https://github.com/whitewatercn/rimetools\n" +
+            "# 生成工具 https://github.com/whitewatercn/rimetool\n" +
             "# 生成时间 " + current_time + "\n" +
             "---\n"
         )
@@ -33,7 +33,7 @@ def main(vcf_file):
                 # 在行的内容后面加一个tab，然后加上它的拼音，再加一个tab，然后加上数字1
                 new_line_with_pinyin = new_line + '\t' + pinyin + '\t1\n'
                 outfile.write(new_line_with_pinyin)
-
+        print(f"已生成文件 {os.path.abspath(outfile.name)}")
 
 
 if __name__ == "__main__":

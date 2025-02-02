@@ -15,9 +15,11 @@ pip install rimetool
 
 # 使用
 
-以 `sample_input`中的 `vcf_sample.vcf`为例，这是macOS导出的通讯录，我们希望将其中的名字转换成rime词库，从而实现某些国产输入法导入通讯录的功能
+⚠️请查看 `examples`中相关示例文件，确保自己的原始文件符合rimetool的需求才可以转换
 
-里面的内容为
+以 `examples/contacts.vcf`为例，这是macOS导出的通讯录，我们希望将其中的名字转换成rime词库，从而实现某些国产输入法导入通讯录的功能
+
+其内容如下，转换前请确认你的vcf文件格式与之相符
 
 ```
 BEGIN:VCARD
@@ -49,10 +51,11 @@ END:VCARD
 在终端执行
 
 ```
-rimetool --input-path sample_input/vcf_sample.vcf --tool vcf
+> rimetool --input-path examples/contacts.vcf --tool vcf
+已生成文件 /Users/ww/coding/mytools/rimetool_github/contact_output.dict.yaml
 ```
 
-你将在执行命令时所在路径的 `rimetool_output`文件夹找到 `vcf_mycontacts.dict.yaml`，内容为
+其内容为
 
 ```
 # 生成工具 https://github.com/whitewatercn/rimetools
@@ -64,3 +67,14 @@ helloworld	helloworld	1
 ```
 
 这样，你就得到了这份vcf通讯录文件中的人名的词库了，快快导入你的rime中吧！
+
+# 文件结构
+
+```.
+├── rimetool #主要的程序目录
+├── examples #你可以使用里面的示例尝试rimetool相关功能
+```
+
+```
+
+```

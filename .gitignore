@@ -8,6 +8,7 @@ rimetool_cache/
 # 测试文件
 test/
 *dict.yaml.txt
+*dict.yaml
 
 # 环境
 .venv/

@@ -3,12 +3,12 @@ from setuptools import setup, find_packages
 setup(
     # 以下为必需参数
     name='rimetool',  # 模块名
-    version='0.1.4',  # 当前版本
+    version='0.1.5',  # 当前版本
     description='rime输入法相关工具',  # 简短描述
     packages=find_packages(include=['rimetool', 'rimetool.*']),  # 包含rimetool和rimetool下的所有子包
     
     # 以下均为可选参数
-    long_description="rime输入法相关工具",# 长描述
+    long_description="rime输入法相关工具，将多种文件转换为rime词库，支持vcf、单个英语单词及词组，单个中文汉字及词组",# 长描述
     url='https://github.com/whitewatercn/rimetool', # 主页链接
     author='whitewatercn', # 作者名
     author_email='whitewatercn@outlook.com', # 作者邮箱
