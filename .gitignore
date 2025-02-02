@@ -4,3 +4,11 @@ dist/
 __pycache__/
 .DS_Store
 rimetool_cache/
+
+# 测试文件
+test/
+*dict.yaml.txt
+
+# 环境
+.venv/
+.vscode/

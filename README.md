@@ -2,13 +2,10 @@
 
 一些rime使用工具
 
-
-| 使用         | 功能简介                 |
-| ---------------- | ----------------------- |
-| rimetool --inputpath 你的文件路径 --tool vcf | 用于将联系人文件（.vcf）导出为rime词库 |
-|rimetool --inputpath 你的文件路径 --tool singleword|将单个词（如hello）或单个词组（如hello world）文件（.txt）导出为rime词库|
-
-
+| 使用                                                 | 功能简介                                                                 |
+| ---------------------------------------------------- | ------------------------------------------------------------------------ |
+| rimetool --input-path 你的文件路径 --tool vcf        | 用于将联系人文件（.vcf）导出为rime词库                                   |
+| rimetool --input-path 你的文件路径 --tool singleword | 将单个词（如hello）或单个词组（如hello world）文件（.txt）导出为rime词库 |
 
 # 安装
 
@@ -16,13 +13,9 @@
 pip install rimetool
 ```
 
-
-
 # 使用
 
-以`sample_input`中的`vcf_sample.vcf`为例，这是macOS导出的通讯录，我们希望将其中的名字转换成rime词库，从而实现某些国产输入法导入通讯录的功能
-
-
+以 `sample_input`中的 `vcf_sample.vcf`为例，这是macOS导出的通讯录，我们希望将其中的名字转换成rime词库，从而实现某些国产输入法导入通讯录的功能
 
 里面的内容为
 
@@ -59,7 +52,7 @@ END:VCARD
 rimetool --input-path sample_input/vcf_sample.vcf --tool vcf
 ```
 
-你将在执行命令时所在路径的`rimetool_output`文件夹找到`vcf_mycontacts.dict.yaml`，内容为
+你将在执行命令时所在路径的 `rimetool_output`文件夹找到 `vcf_mycontacts.dict.yaml`，内容为
 
 ```
 # 生成工具 https://github.com/whitewatercn/rimetools
