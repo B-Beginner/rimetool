@@ -9,6 +9,8 @@ rimetool_cache/
 test/
 *dict.yaml.txt
 *dict.yaml
+*output*
+
 
 # 环境
 .venv/

@@ -20,9 +20,10 @@ def replace_roman_with_chinese(text):
         text = text.replace(roman, chinese)
     return text
 
-def main(singlechinese_file):
+def main(input_file, output_path):
 	current_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-	with open(singlechinese_file, 'r') as infile, open(f'./singlechinese_output.dict.yaml', 'w') as outfile:
+	output_file = os.path.join(output_path, f'singlechinese_output.dict.yaml')
+	with open(input_file, 'r') as infile, open(output_file, 'w') as outfile:
 		outfile.write(
 			"# 生成工具 https://github.com/whitewatercn/rimetool\n" +
 			"# 生成时间 " + current_time + "\n" +
@@ -36,7 +37,7 @@ def main(singlechinese_file):
 			new_line = words[0]
 			pinyin_line = replace_roman_with_chinese(new_line) # 将罗马数字转换为中文数字
 			pinyin_line = pinyin_line.replace('-', '')  # 删除所有的 '-'
-			pinyin = ''.join(lazy_pinyin(pinyin_line))
+			pinyin = ' '.join(lazy_pinyin(pinyin_line))
 			# 在行的内容后面加一个tab，然后加上它的拼音，再加一个tab，然后加上数字1
 			new_line_with_pinyin = new_line + '\t' + pinyin + '\t1\n'
 			outfile.write(new_line_with_pinyin)
