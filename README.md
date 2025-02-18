@@ -2,10 +2,12 @@
 
 一些rime使用工具
 
-| 使用                                                 | 功能简介                                                                 |
-| ---------------------------------------------------- | ------------------------------------------------------------------------ |
-| rimetool --input-path 你的文件路径 --tool vcf        | 用于将联系人文件（.vcf）导出为rime词库                                   |
-| rimetool --input-path 你的文件路径 --tool singleword | 将单个词（如hello）或单个词组（如hello world）文件（.txt）导出为rime词库 |
+| 使用                                                    | 功能简介                                                     |
+| ------------------------------------------------------- | ------------------------------------------------------------ |
+| rimetool --input-path 你的文件路径 --tool vcf           | 用于将联系人文件（.vcf）导出为rime词库                       |
+| rimetool --input-path 你的文件路径 --tool singleword    | 将单个词（如hello）或单个词组（如hello world）文件（.txt）导出为rime词库 |
+| rimetool --input-path 你的文件路径 --tool singlechinese | 将单个中文词组（如你好）文件（.txt）导出为rime词库           |
+| rimetool --input-path 你的文件路径 --tool tosougou      | 将rime词库导出为搜狗txt词库                                  |
 
 # 安装
 
@@ -78,3 +80,12 @@ helloworld	helloworld	1
 ```
 
 ```
+
+# 感谢
+
+[manateelazycat](https://manateelazycat.github.io/)：作为开源过来人提供了思想上的帮助
+
+# 更多
+
+[中州韵助手](https://github.com/yanhuacuo/rimetool)：一款rime可视化配置工具，很巧也叫rimetool
+
