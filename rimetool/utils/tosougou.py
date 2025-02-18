@@ -20,7 +20,7 @@ def main(input_file, output_path):
 					output, input, sort = parts
 					new_input = "'" + input.replace(' ', "'")
 					new_output = output
-					new_line_output = new_input   +' '+ new_output + '\n'
+					new_line_output = new_output.strip().replace('-', "") + '\n'
 					outfile.write(new_line_output)
 		print(f"已生成文件 {os.path.abspath(outfile.name)}")
 
