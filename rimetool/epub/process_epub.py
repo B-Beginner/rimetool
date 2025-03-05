@@ -5,7 +5,7 @@ import argparse
 def parse_args():
     """解析命令行参数"""
     #  python process_epub.py --input "输入文件.epub" --output-dir "输出目录的路径" [--rime]
-    #  python process_epub.py -i "输入文件.epub" -o "输出目录的路径" [-r]
+    #  python process_epub.py -i "输入文件.epub" -o "输出目录的路径" [-r] 
 
     parser = argparse.ArgumentParser(description='处理EPUB文件并生成不同格式的输出')
     parser.add_argument('--input', '-i', required=True,

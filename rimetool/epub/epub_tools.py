@@ -6,7 +6,27 @@ import os
 import warnings
 from pypinyin import lazy_pinyin
 from datetime import datetime
-from ..utils.singlechinese import replace_roman_with_chinese
+# from ..utils.singlechinese import replace_roman_with_chinese
+
+roman_to_chinese = {
+    'Ⅰ': '一', 'Ⅱ': '二', 'Ⅲ': '三', 'Ⅳ': '四', 'Ⅴ': '五',
+    'Ⅵ': '六', 'Ⅶ': '七', 'Ⅷ': '八', 'Ⅸ': '九', 'Ⅹ': '十', 
+	'Ⅺ': '十一', 'Ⅻ': '十二', 'ⅩⅢ': '十三', 'ⅩⅣ': '十四', 'ⅩⅤ': '十五',
+	'ⅩⅥ': '十六', 'ⅩⅦ': '十七', 'ⅩⅧ': '十八', 'ⅩⅨ': '十九', 'ⅩⅩ': '二十',
+    'α': '阿尔法', 'β': '贝塔', 'γ': '伽玛', 'δ': '德尔塔', 'ε': '艾普西龙',
+	'ζ': '泽塔', 'η': '伊塔', 'θ': '西塔', 'ι': '艾欧塔', 'κ': '喀帕',
+    'λ': '拉姆达', 'μ': '缪', 'ν': '纽', 'ξ': '克西', 'ο': '欧米克戎',
+    'π': '派', 'ρ': '柔', 'σ': '西格玛', 'τ': '陶', 'υ': '宇普西龙',
+    'φ': '菲', 'χ': '卡伊', 'ψ': '普赛', 'ω': '欧米伽'
+
+}
+
+def replace_roman_with_chinese(text):
+    for roman, chinese in roman_to_chinese.items():
+        text = text.replace(roman, chinese)
+    return text
+
+
 
 # 忽略警告
 warnings.filterwarnings("ignore", category=UserWarning, message="In the future version we will turn default option ignore_ncx to True.")
@@ -135,11 +155,21 @@ class EpubProcessor:
 
     def process_epub(self):
         """执行完整的处理流程"""
+        # print("步骤1: 读取EPUB文件...")
         self.read_epub()
+        
+        # print("步骤2: 提取章节内容...")
         sections = self.extract_sections()
+        
+        # print("步骤3: 处理HTML内容...")
         self.process_html(sections)
+        
+        # print("步骤4: 清理HTML标签...")
         final_content = self.clean_html()
+        
+        # print("步骤5: 保存结果...")
         self.save_output(final_content)
+        
         print(f"处理完成！结果已保存到: {self.output_path}")
         
         # 生成rime格式文件
