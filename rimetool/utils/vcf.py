@@ -10,7 +10,7 @@ def main(input_file, output_path):
     current_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     output_file = os.path.join(output_path, f'vcf_contact_output.dict.yaml')
     # 从vcf文件中提取联系人姓名
-    with open(input_file, 'r', encoding=encoding) as infile, open(output_file, 'w', encoding='gbk') as outfile:
+    with open(input_file, 'r', encoding=encoding) as infile, open(output_file, 'w', encoding='utf-8') as outfile:
         outfile.write(
             "# 生成工具 https://github.com/whitewatercn/rimetool\n" +
             "# 生成时间 " + current_time + "\n" +
