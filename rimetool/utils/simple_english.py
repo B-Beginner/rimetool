@@ -1,7 +1,7 @@
 from datetime import datetime
 import re
 import os
-from .encoding_test import detect_file_encoding
+from .common import detect_file_encoding
 
 def main(input_file, output_path):
 	# 确保文件编码正确读入，并在输出时转为gbk
