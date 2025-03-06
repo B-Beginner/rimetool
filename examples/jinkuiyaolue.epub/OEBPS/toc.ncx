@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1">
+   <head>
+      <meta name="dtb:uid" content="bookid"/>
+      <meta name="dtb:depth" content="0"/>
+      <meta name="dtb:totalPageCount" content="0"/>
+      <meta name="dtb:maxPageNumber" content="0"/>
+   </head>
+   <docTitle>
+      <text>UnKnown</text>
+   </docTitle>
+   <navMap>
+     <navPoint id="id1" playOrder="1">
+       <navLabel>
+         <text>内封</text>
+       </navLabel>
+       <content src="text00000.html#CHP1"/>
+     </navPoint>
+     <navPoint id="id2" playOrder="2">
+       <navLabel>
+         <text>版权页</text>
+       </navLabel>
+       <content src="text00001.html#CHP2"/>
+     </navPoint>
+     <navPoint id="id3" playOrder="3">
+       <navLabel>
+         <text>导读</text>
+       </navLabel>
+       <content src="text00002.html#CHP3"/>
+     </navPoint>
+     <navPoint id="id4" playOrder="4">
+       <navLabel>
+         <text>整理说明</text>
+       </navLabel>
+       <content src="text00003.html#CHP4"/>
+     </navPoint>
+     <navPoint id="id5" playOrder="5">
+       <navLabel>
+         <text>金匮要略方论序</text>
+       </navLabel>
+       <content src="text00004.html#CHP5"/>
+     </navPoint>
+     <navPoint id="id6" playOrder="6">
+       <navLabel>
+         <text>Table of Contents</text>
+       </navLabel>
+       <content src="text00005.html#catalinaMap"/>
+     </navPoint>
+     <navPoint id="id7" playOrder="7">
+       <navLabel>
+         <text>卷上</text>
+       </navLabel>
+       <content src="text00006.html#CHP1"/>
+     <navPoint id="id8" playOrder="8">
+       <navLabel>
+         <text>脏腑经络先后病脉证第一</text>
+       </navLabel>
+       <content src="text00006.html#CHP1-1"/>
+     </navPoint>
+     <navPoint id="id9" playOrder="9">
+       <navLabel>
+         <text>痉湿暍病脉证治第二</text>
+       </navLabel>
+       <content src="text00007.html#CHP1-2"/>
+     </navPoint>
+     <navPoint id="id10" playOrder="10">
+       <navLabel>
+         <text>百合狐惑阴阳毒病脉证治第三</text>
+       </navLabel>
+       <content src="text00008.html#CHP1-3"/>
+     </navPoint>
+     <navPoint id="id11" playOrder="11">
+       <navLabel>
+         <text>疟病脉证并治第四</text>
+       </navLabel>
+       <content src="text00009.html#CHP1-4"/>
+     </navPoint>
+     <navPoint id="id12" playOrder="12">
+       <navLabel>
+         <text>中风历节病脉证并治第五</text>
+       </navLabel>
+       <content src="text00010.html#CHP1-5"/>
+     </navPoint>
+     <navPoint id="id13" playOrder="13">
+       <navLabel>
+         <text>血痹虚劳病脉证并治第六</text>
+       </navLabel>
+       <content src="text00011.html#CHP1-6"/>
+     </navPoint>
+     <navPoint id="id14" playOrder="14">
+       <navLabel>
+         <text>肺痿肺痈咳嗽上气病脉证治第七</text>
+       </navLabel>
+       <content src="text00012.html#CHP1-7"/>
+     </navPoint>
+     <navPoint id="id15" playOrder="15">
+       <navLabel>
+         <text>奔豚气病脉证治第八</text>
+       </navLabel>
+       <content src="text00013.html#CHP1-8"/>
+     </navPoint>
+     <navPoint id="id16" playOrder="16">
+       <navLabel>
+         <text>胸痹心痛短气病脉证治第九</text>
+       </navLabel>
+       <content src="text00014.html#CHP1-9"/>
+     </navPoint>
+     <navPoint id="id17" playOrder="17">
+       <navLabel>
+         <text>腹满寒疝宿食病脉证治第十</text>
+       </navLabel>
+       <content src="text00015.html#CHP1-10"/>
+     </navPoint>
+     </navPoint>
+     <navPoint id="id18" playOrder="18">
+       <navLabel>
+         <text>卷中</text>
+       </navLabel>
+       <content src="text00016.html#CHP2"/>
+     <navPoint id="id19" playOrder="19">
+       <navLabel>
+         <text>五脏风寒积聚病脉证 并治第十一</text>
+       </navLabel>
+       <content src="text00016.html#CHP2-1"/>
+     </navPoint>
+     <navPoint id="id20" playOrder="20">
+       <navLabel>
+         <text>痰饮咳嗽病脉证并治第十二</text>
+       </navLabel>
+       <content src="text00017.html#CHP2-2"/>
+     </navPoint>
+     <navPoint id="id21" playOrder="21">
+       <navLabel>
+         <text>消渴小便不利淋病脉证并治第十三</text>
+       </navLabel>
+       <content src="text00018.html#CHP2-3"/>
+     </navPoint>
+     <navPoint id="id22" playOrder="22">
+       <navLabel>
+         <text>水气病脉证并治第十四</text>
+       </navLabel>
+       <content src="text00019.html#CHP2-4"/>
+     </navPoint>
+     <navPoint id="id23" playOrder="23">
+       <navLabel>
+         <text>黄疸病脉证并治第十五</text>
+       </navLabel>
+       <content src="text00020.html#CHP2-5"/>
+     </navPoint>
+     <navPoint id="id24" playOrder="24">
+       <navLabel>
+         <text>惊悸吐衄下血胸满瘀血病脉证治第十六</text>
+       </navLabel>
+       <content src="text00021.html#CHP2-6"/>
+     </navPoint>
+     <navPoint id="id25" playOrder="25">
+       <navLabel>
+         <text>呕吐哕下利病脉证治第十七</text>
+       </navLabel>
+       <content src="text00022.html#CHP2-7"/>
+     </navPoint>
+     <navPoint id="id26" playOrder="26">
+       <navLabel>
+         <text>疮痈肠痈浸淫病脉证 并治第十八</text>
+       </navLabel>
+       <content src="text00023.html#CHP2-8"/>
+     </navPoint>
+     <navPoint id="id27" playOrder="27">
+       <navLabel>
+         <text>趺蹶手指臂肿转筋阴狐疝蛔虫病脉证治第十九</text>
+       </navLabel>
+       <content src="text00024.html#CHP2-9"/>
+     </navPoint>
+     </navPoint>
+     <navPoint id="id28" playOrder="28">
+       <navLabel>
+         <text>卷下</text>
+       </navLabel>
+       <content src="text00025.html#CHP3"/>
+     <navPoint id="id29" playOrder="29">
+       <navLabel>
+         <text>妇人妊娠病脉证并治第二十</text>
+       </navLabel>
+       <content src="text00025.html#CHP3-1"/>
+     </navPoint>
+     <navPoint id="id30" playOrder="30">
+       <navLabel>
+         <text>妇人产后病脉证治第二十一</text>
+       </navLabel>
+       <content src="text00026.html#CHP3-2"/>
+     </navPoint>
+     <navPoint id="id31" playOrder="31">
+       <navLabel>
+         <text>妇人杂病脉证并治第二十二</text>
+       </navLabel>
+       <content src="text00027.html#CHP3-3"/>
+     </navPoint>
+     <navPoint id="id32" playOrder="32">
+       <navLabel>
+         <text>杂疗方第二十三</text>
+       </navLabel>
+       <content src="text00028.html#CHP3-4"/>
+     </navPoint>
+     <navPoint id="id33" playOrder="33">
+       <navLabel>
+         <text>禽兽鱼虫禁忌并治第二十四</text>
+       </navLabel>
+       <content src="text00029.html#CHP3-5"/>
+     </navPoint>
+     <navPoint id="id34" playOrder="34">
+       <navLabel>
+         <text>果实菜谷禁忌并治第二十五</text>
+       </navLabel>
+       <content src="text00030.html#CHP3-6"/>
+     </navPoint>
+     </navPoint>
+     <navPoint id="id35" playOrder="35">
+       <navLabel>
+         <text>方剂索引</text>
+       </navLabel>
+       <content src="text00031.html#CHP1"/>
+     </navPoint>
+   </navMap>
+</ncx>
