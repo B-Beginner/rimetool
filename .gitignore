@@ -1,4 +1,17 @@
+rimetool.egg-info/
+build/
+dist/
+__pycache__/
 .DS_Store
 rimetool_cache/
-rimetool_output/
-utils/__pychache__/
+
+# 测试文件
+test/
+*dict.yaml.txt
+*dict.yaml
+*output*
+
+
+# 环境
+.venv/
+.vscode/
