@@ -1,0 +1,24 @@
+BEGIN:VCARD
+VERSION:3.0
+PRODID:-//Apple Inc.//macOS 14.5//EN
+N:apple;;;;
+FN:apple
+TEL;type=pref:4006668800
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+PRODID:-//Apple Inc.//macOS 14.5//EN
+N:hello;world;;;
+FN:world hello
+item1.EMAIL;type=INTERNET;type=pref:helloworld@hello.world
+item1.X-ABLabel:_$!<Other>!$_
+EMAIL;type=INTERNET;type=HOME:hello@world.hello
+END:VCARD
+BEGIN:VCARD
+VERSION:3.0
+PRODID:-//Apple Inc.//macOS 14.5//EN
+N:你;好;;;
+FN:好 你
+EMAIL;type=INTERNET;type=pref:123456@qq.com
+TEL;type=IPHONE;type=CELL;type=VOICE;type=pref:10086
+END:VCARD
