@@ -1,14 +1,14 @@
 import os
-from utils import vcf
+from rimetool.utils import vcf
 from rimetool.utils import simple_english
 from rimetool.utils import simple_chinese
-from utils import tosougou
+from rimetool.utils import tosogou
 from rimetool.utils import Epub_Processor
 import argparse
 
 
 """
-示例指令
+epub示例指令
 
 1：将EPUB转换为纯文本
 python rimetool/main.py -t epub -i "E:\rimetool\examples\jinkuiyaolue.epub" -o "E:\rimetool\rimetool\epub" -m epub_to_txt
@@ -22,6 +22,13 @@ python rimetool/main.py -t epub -i "E:\rimetool\rimetool\epub\epub转txt.txt" -o
 4：完整的 EPUB -> txt -> rime 转换流程（包含了第一、第三步）
 python rimetool/main.py -t epub -i "E:\rimetool\examples\jinkuiyaolue.epub" -o "E:\rimetool\rimetool\epub" -m epub_to_rime
 
+
+其他示例指令
+
+| rimetool --input-path 你的文件路径 --tool vcf           | 用于将联系人文件（.vcf）导出为rime词库                       |
+| rimetool --input-path 你的文件路径 --tool singleword    | 将单个词（如hello）或单个词组（如hello world）文件（.txt）导出为rime词库 |
+| rimetool --input-path 你的文件路径 --tool singlechinese | 将单个中文词组（如你好）文件（.txt）导出为rime词库           |
+| rimetool --input-path 你的文件路径 --tool tosougou      | 将rime词库导出为搜狗txt词库                                  |
 
 """
 
@@ -43,7 +50,7 @@ def get_args_parser(add_help=True):
 	parser.add_argument('--input-path', '-i', required=True, type=str, help='需要处理的文件自身路径')
 	parser.add_argument('--output-path', '-o', default='./rimetool_output', type=str, help='输出文件夹的路径')
 	parser.add_argument('--tool', '-t', required=True, choices=['vcf','singleword','singlechinese','tosougou','epub','hello'], type=str, help='选择工具')
-	parser.add_argument('--mode', '-m', required=True, 
+	parser.add_argument('--mode', '-m', required=False, 
 						   choices=list(mode_choices.keys()),
 						   help='选择EPUB处理模式：\n'
 								'1/epub_to_txt: 将EPUB转换为纯文本\n'
@@ -69,7 +76,7 @@ def main():
 	elif args.tool == 'singlechinese':
 		simple_chinese.main(args.input_path, args.output_path)
 	elif args.tool == 'tosougou':
-		tosougou.main(args.input_path, args.output_path)
+		tosogou.main(args.input_path, args.output_path)
 	elif args.tool == 'epub':
 		output_dir = args.output_path
 		# 设置各种输出文件的路径
