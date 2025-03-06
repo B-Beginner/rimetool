@@ -73,18 +73,22 @@ helloworld	helloworld	1
 # 文件结构
 
 ```.
-├── rimetool #主要的程序目录
-├── examples #你可以使用里面的示例尝试rimetool相关功能
+├── README.md
+├── examples #示例文件
+├── rimetool #核心代码
+│   ├── __init__.py
+│   ├── epub #epub相关功能核心代码
+│   ├── main.py #读取用户输入的输入输出路径，选择转换工具，启用utils下的各类转换工具
+│   └── utils #各类转换工具的核心代码
+└── setup.py #pypi相关配置文件
 ```
 
-```
 
-```
 
 # 感谢
 
 [manateelazycat](https://manateelazycat.github.io/)：作为开源过来人提供了思想上的帮助
-
+[JyiDeng](https://github.com/JyiDeng)：核心开发者
 # 更多
 
 [中州韵助手](https://github.com/yanhuacuo/rimetool)：一款rime可视化配置工具，很巧也叫rimetool
