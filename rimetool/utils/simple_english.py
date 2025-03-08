@@ -8,7 +8,7 @@ def main(input_file, output_path):
 	encoding = detect_file_encoding(input_file)
 
 	current_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-	output_file = os.path.join(output_path, f'singleword_output.dict.yaml')
+	output_file = os.path.join(output_path, f'simple_english_output.dict_{current_time}.yaml')
 
 	with open(input_file, 'r', encoding=encoding) as infile, open(output_file, 'w+',encoding='utf-8') as outfile:
 		outfile.write(

@@ -6,6 +6,8 @@ import os
 from pypinyin import lazy_pinyin
 from datetime import datetime
 from .common import detect_file_encoding, replace_roman_with_chinese
+
+from .Pinyin_Processor import pinyin_process
 import warnings 
 # import subprocess
 
@@ -113,6 +115,10 @@ class EpubProcessor:
                 if item:  # 避免写入空字符串
                     output_file.write(item + '\n')
     
+    # 长句不需要删除标点，输出时依然需要输出标点，如
+    # ✅上四味，以水八升，先煮蜀漆、麻黄，
+    # ❌上四味以水八升先煮蜀漆麻黄
+
     def split_into_long_sentences(self, output_dir):
         """将内容拆分成无标点的长句
         Args:
@@ -133,7 +139,7 @@ class EpubProcessor:
             # )
             for item in file_content.split('\n'):
                 if item:  # 避免写入空字符串
-                    cleaned_item = re.sub(r'[^\w]', '', item)  # 移除标点符号和空格
+                    cleaned_item = item
                     output_file.write(cleaned_item + '\n')
     
     def to_rime(self, input_file, output_name):
@@ -165,7 +171,7 @@ class EpubProcessor:
                     # 删除所有的 '-'
                     content = content.replace('-', '')
                     # 生成拼音
-                    pinyin = ' '.join(lazy_pinyin(content))
+                    pinyin = ' '.join(pinyin_process(content))
                     # 写入rime格式
                     outfile.write(f"{content}\t{pinyin}\t1\n")
         

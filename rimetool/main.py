@@ -26,8 +26,8 @@ python rimetool/main.py -t epub -i "E:\rimetool\examples\jinkuiyaolue.epub" -o "
 其他示例指令
 
 | rimetool --input-path 你的文件路径 --tool vcf           | 用于将联系人文件（.vcf）导出为rime词库                       |
-| rimetool --input-path 你的文件路径 --tool singleword    | 将单个词（如hello）或单个词组（如hello world）文件（.txt）导出为rime词库 |
-| rimetool --input-path 你的文件路径 --tool singlechinese | 将单个中文词组（如你好）文件（.txt）导出为rime词库           |
+| rimetool --input-path 你的文件路径 --tool simple-english    | 将单个词（如hello）或单个词组（如hello world）文件（.txt）导出为rime词库 |
+| rimetool --input-path 你的文件路径 --tool simple-chinese | 将单个中文词组（如你好）文件（.txt）导出为rime词库           |
 | rimetool --input-path 你的文件路径 --tool tosougou      | 将rime词库导出为搜狗txt词库                                  |
 
 """
@@ -49,7 +49,7 @@ def get_args_parser(add_help=True):
 	parser = argparse.ArgumentParser(description='rime输入法相关工具', add_help=add_help)
 	parser.add_argument('--input-path', '-i', required=True, type=str, help='需要处理的文件自身路径')
 	parser.add_argument('--output-path', '-o', default='./rimetool_output', type=str, help='输出文件夹的路径')
-	parser.add_argument('--tool', '-t', required=True, choices=['vcf','singleword','singlechinese','tosougou','epub','hello'], type=str, help='选择工具')
+	parser.add_argument('--tool', '-t', required=True, choices=['vcf','simple-english','se','simple-chinese','sc','tosougou','epub','hello'], type=str, help='选择工具')
 	parser.add_argument('--mode', '-m', required=False, 
 						   choices=list(mode_choices.keys()),
 						   help='选择EPUB处理模式：\n'
@@ -57,7 +57,6 @@ def get_args_parser(add_help=True):
 								'2/txt_to_short_long: 将文本转换为短句和长句\n'
 								'3/txt_to_rime: 将文本转换为rime格式\n'
 								'4/epub_to_rime: 完整的EPUB到rime转换流程')
-
 	return parser
 
 def main():
@@ -71,9 +70,9 @@ def main():
 	os.makedirs(args.output_path, exist_ok=True)
 	if args.tool == 'vcf':
 		vcf.main(args.input_path, args.output_path)
-	elif args.tool == 'singleword':
+	elif args.tool in ['simple-english', 'se']:
 		simple_english.main(args.input_path, args.output_path)
-	elif args.tool == 'singlechinese':
+	elif args.tool in ['simple-chinese', 'sc']:
 		simple_chinese.main(args.input_path, args.output_path)
 	elif args.tool == 'tosougou':
 		tosogou.main(args.input_path, args.output_path)
@@ -85,10 +84,11 @@ def main():
 			'short': os.path.join(output_dir, "短句拆分.txt"),  # 短句拆分结果
 			'long': os.path.join(output_dir, "长句拆分.txt")  # 长句拆分结果
 		}
-		
 		# 创建EpubProcessor实例
 		processor = Epub_Processor.EpubProcessor(args.input_path, output_dir, output_files)
 		
+
+
 		# 根据选择的模式执行相应的处理
 		mode = mode_choices[args.mode]
 		if mode == 'epub_to_txt':
