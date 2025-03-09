@@ -100,9 +100,10 @@ class EpubProcessor:
             # )
             f.write(content)
 
-    def split_into_short_sentences(self, output_dir):
+    def split_into_short_sentences(self, input_path,output_dir):
         # 读取清理后的内容
-        epub_txt_file = os.path.join(self.output_path, "epub转txt.txt")
+        # epub_txt_file = os.path.join(self.output_path, "epub转txt.txt")
+        epub_txt_file = input_path
         with open(epub_txt_file, 'r', encoding='utf-8') as f:
             file_content = f.read()
         
@@ -119,13 +120,14 @@ class EpubProcessor:
     # ✅上四味，以水八升，先煮蜀漆、麻黄，
     # ❌上四味以水八升先煮蜀漆麻黄
 
-    def split_into_long_sentences(self, output_dir):
+    def split_into_long_sentences(self, input_path, output_dir):
         """将内容拆分成无标点的长句
         Args:
             output_path: 输出文件路径
         """
         # 读取清理后的内容
-        epub_txt_file = os.path.join(self.output_path, "epub转txt.txt")
+        # epub_txt_file = os.path.join(self.output_path, "epub转txt.txt")
+        epub_txt_file = self.input_path
         with open(epub_txt_file, 'r', encoding='utf-8') as f:
             file_content = f.read()
         
@@ -186,11 +188,11 @@ class EpubProcessor:
         self.epub_to_txt()
         self.txt_to_rime_all(output_files)
 
-    def txt_to_rime_all(self, output_files):
+    def txt_to_rime_all(self, input_path, output_files):
         """
         一键直达 txt->长短句的rime
         """
-        self.txt_to_short_long(output_files)
+        self.txt_to_short_long(input_path, output_files)
         self.txt_short_long_to_rime(output_files)
 
 
@@ -214,7 +216,7 @@ class EpubProcessor:
         
         print(f"epub->txt 处理完成！结果已保存到: {self.output_path}\\epub转txt.txt")
 
-    def txt_to_short_long(self, output_files):
+    def txt_to_short_long(self, input_path, output_files):
         """
         第二个部分: 将txt文件转成短词组和长词组词库
         """
@@ -222,12 +224,12 @@ class EpubProcessor:
         print("\n*** 第二部分: 将txt文件转成短词组和长词组词库 ***\n")
         # 第二步：执行短句拆分
         print("开始短句拆分...")
-        self.split_into_short_sentences(output_files['short'])
+        self.split_into_short_sentences(input_path, output_files['short'])
         print(f"短句拆分完成，结果保存在: {output_files['short']}")
 
         # 第三步：执行长句拆分
         print("开始长句拆分...")
-        self.split_into_long_sentences(output_files['long'])
+        self.split_into_long_sentences(input_path, output_files['long'])
         print(f"长句拆分完成，结果保存在: {output_files['long']}")
 
     def txt_short_long_to_rime(self, output_files):
@@ -323,4 +325,3 @@ class EpubProcessor:
     #     # 使用echo命令写入文件头
     #     header = f"# 生成工具 https://github.com/whitewatercn/rimetool\n# 生成时间 {current_time}\n---\n"
     #     subprocess.run(f'echo "{header}" > {epub_txt_file}', shell=True)
-        

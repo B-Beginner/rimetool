@@ -87,7 +87,7 @@ def main():
         if mode == 'epub_to_txt':
             processor.epub_to_txt()
         elif mode == 'txt_to_short_long':
-            processor.txt_to_short_long(output_files)
+            processor.txt_to_short_long(args.input_path, output_files)
         elif mode == 'txt_to_rime':
             processor.txt_to_rime_all(output_files)
         elif mode == 'epub_to_rime':
