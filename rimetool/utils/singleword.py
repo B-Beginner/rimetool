@@ -4,7 +4,7 @@ import os
 
 def main(input_file, output_path):
 	current_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
-	output_file = os.path.join(output_path, f'singleword_output.dict.yaml')
+	output_file = os.path.join(output_path, f'simple_english_output.dict_{current_time}.yaml')
 
 	with open(input_file, 'r') as infile, open(output_file, 'w+') as outfile:
 		outfile.write(
