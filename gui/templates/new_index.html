@@ -1,18 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
     <meta charset="UTF-8">
     <title>RimeTool GUI - New Version</title>
     <style>
-        .error {
-            color: red;
-            display: none;
-        }
-        .success {
-            color: green;
-            display: none;
-        }
-        .loading {
+        .error { color: red; display: none; }
+        .success { color: green; display: none; }
+        .loading { display: none; }
+        .debug-info { 
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f0f0f0;
             display: none;
         }
     </style>
@@ -22,6 +20,10 @@
     <div id="error" class="error"></div>
     <div id="success" class="success"></div>
     <div id="loading" class="loading">处理中，请稍候...</div>
+    <div id="debug-info" class="debug-info">
+        <h3>调试信息：</h3>
+        <pre id="debug-content"></pre>
+    </div>
     
     <div>
         <label for="file">选择文件：</label>
@@ -46,7 +48,17 @@
     </div>
 
     <script>
+        function log(message, type = 'info') {
+            console.log(`[${type.toUpperCase()}] ${message}`);
+            const debugContent = document.getElementById('debug-content');
+            const timestamp = new Date().toLocaleTimeString();
+            debugContent.textContent += `[${timestamp}] ${message}\n`;
+            document.getElementById('debug-info').style.display = 'block';
+        }
+
         function processFile() {
+            log('开始处理文件');
+            
             const fileInput = document.getElementById('file');
             const tool = document.getElementById('tool').value;
             const mode = document.getElementById('mode').value;
@@ -54,12 +66,16 @@
             const error = document.getElementById('error');
             const success = document.getElementById('success');
 
+            // 检查文件
             if (!fileInput.files[0]) {
-                error.textContent = '请选择文件';
+                const errorMsg = '请选择文件';
+                log(errorMsg, 'error');
+                error.textContent = errorMsg;
                 error.style.display = 'block';
                 return;
             }
 
+            // 准备表单数据
             const formData = new FormData();
             formData.append('file', fileInput.files[0]);
             formData.append('tool', tool);
@@ -67,17 +83,21 @@
                 formData.append('mode', mode);
             }
 
+            log(`准备发送请求 - 文件: ${fileInput.files[0].name}, 工具: ${tool}, 模式: ${mode}`);
+
+            // 更新UI状态
             loading.style.display = 'block';
             error.style.display = 'none';
             success.style.display = 'none';
 
-            console.log('开始发送请求...');
+            // 发送请求
             fetch('/process', {
                 method: 'POST',
                 body: formData
             })
             .then(response => {
-                console.log('收到响应:', response.status);
+                log(`收到响应 - 状态: ${response.status}`);
+                
                 if (!response.ok) {
                     return response.text().then(text => {
                         throw new Error(text);
@@ -86,12 +106,12 @@
                 return response.blob();
             })
             .then(blob => {
-                console.log('处理成功，准备下载');
+                log('处理成功，准备下载文件');
                 loading.style.display = 'none';
                 success.textContent = '处理成功！正在下载文件...';
                 success.style.display = 'block';
 
-                // 创建下载链接
+                // 下载文件
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
@@ -100,14 +120,22 @@
                 a.click();
                 window.URL.revokeObjectURL(url);
                 a.remove();
+                
+                log('文件下载已开始');
             })
             .catch(err => {
-                console.error('发生错误:', err);
+                const errorMsg = err.message || '未知错误';
+                log(`发生错误: ${errorMsg}`, 'error');
                 loading.style.display = 'none';
-                error.textContent = '错误：' + err.message;
+                error.textContent = '错误：' + errorMsg;
                 error.style.display = 'block';
             });
         }
+
+        // 页面加载完成时的初始化
+        window.onload = function() {
+            log('页面已加载完成');
+        };
     </script>
 </body>
 </html> 
