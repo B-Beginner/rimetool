@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>RimeTool GUI - New Version</title>
+    <style>
+        .error {
+            color: red;
+            display: none;
+        }
+        .success {
+            color: green;
+            display: none;
+        }
+        .loading {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>RimeTool GUI</h1>
+    <div id="error" class="error"></div>
+    <div id="success" class="success"></div>
+    <div id="loading" class="loading">处理中，请稍候...</div>
+    
+    <div>
+        <label for="file">选择文件：</label>
+        <input type="file" id="file" required><br><br>
+        
+        <label for="tool">选择工具：</label>
+        <select id="tool" required>
+            <option value="vcf">VCF</option>
+            <option value="simple-english">Simple English</option>
+            <option value="se">Simple English (se)</option>
+            <option value="simple-chinese">Simple Chinese</option>
+            <option value="sc">Simple Chinese (sc)</option>
+            <option value="tosougou">To Sogou</option>
+            <option value="epub">EPUB</option>
+            <option value="hello">Hello</option>
+        </select><br><br>
+        
+        <label for="mode">模式（可选）：</label>
+        <input type="text" id="mode"><br><br>
+        
+        <button onclick="processFile()">处理文件</button>
+    </div>
+
+    <script>
+        function processFile() {
+            const fileInput = document.getElementById('file');
+            const tool = document.getElementById('tool').value;
+            const mode = document.getElementById('mode').value;
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            const success = document.getElementById('success');
+
+            if (!fileInput.files[0]) {
+                error.textContent = '请选择文件';
+                error.style.display = 'block';
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            formData.append('tool', tool);
+            if (mode) {
+                formData.append('mode', mode);
+            }
+
+            loading.style.display = 'block';
+            error.style.display = 'none';
+            success.style.display = 'none';
+
+            console.log('开始发送请求...');
+            fetch('/process', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                console.log('收到响应:', response.status);
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(text);
+                    });
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                console.log('处理成功，准备下载');
+                loading.style.display = 'none';
+                success.textContent = '处理成功！正在下载文件...';
+                success.style.display = 'block';
+
+                // 创建下载链接
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = fileInput.files[0].name;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();
+            })
+            .catch(err => {
+                console.error('发生错误:', err);
+                loading.style.display = 'none';
+                error.textContent = '错误：' + err.message;
+                error.style.display = 'block';
+            });
+        }
+    </script>
+</body>
+</html> 

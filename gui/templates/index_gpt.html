@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RimeTool GUI</title>
+    <style>
+        .error { color: red; }
+        .success { color: green; }
+        .loading { display: none; color: blue; }
+    </style>
+</head>
+<body>
+    <h1>RimeTool GUI</h1>
+    <div id="error" class="error"></div>
+    <div id="success" class="success"></div>
+    <div id="loading" class="loading">处理中，请稍候...</div>
+    
+    <div>
+        <label for="file">选择文件：</label>
+        <input type="file" id="file" required><br><br>
+        
+        <label for="tool">选择工具：</label>
+        <select id="tool" required>
+            <option value="vcf">VCF</option>
+            <option value="simple-english">Simple English</option>
+            <option value="se">Simple English (se)</option>
+            <option value="simple-chinese">Simple Chinese</option>
+            <option value="sc">Simple Chinese (sc)</option>
+            <option value="tosougou">To Sogou</option>
+            <option value="epub">EPUB</option>
+            <option value="hello">Hello</option>
+        </select><br><br>
+        
+        <label for="mode">模式（可选）：</label>
+        <input type="text" id="mode"><br><br>
+        
+        <button onclick="processFile()">处理文件</button>
+    </div>
+    
+    <script>
+        function processFile() {
+            let fileInput = document.getElementById("file");
+            let tool = document.getElementById("tool").value;
+            let mode = document.getElementById("mode").value;
+            let errorDiv = document.getElementById("error");
+            let successDiv = document.getElementById("success");
+            let loadingDiv = document.getElementById("loading");
+
+            if (!fileInput.files.length) {
+                errorDiv.textContent = "请选择一个文件";
+                return;
+            }
+            
+            let file = fileInput.files[0];
+            let formData = new FormData();
+            formData.append("file", file);
+            formData.append("tool", tool);
+            formData.append("mode", mode);
+
+            errorDiv.textContent = "";
+            successDiv.textContent = "";
+            loadingDiv.style.display = "block";
+            
+            fetch("/process", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                loadingDiv.style.display = "none";
+                if (data.success) {
+                    successDiv.textContent = "文件处理成功: " + data.message;
+                } else {
+                    errorDiv.textContent = "处理失败: " + data.error;
+                }
+            })
+            .catch(error => {
+                loadingDiv.style.display = "none";
+                errorDiv.textContent = "请求失败: " + error;
+            });
+        }
+    </script>
+</body>
+</html>
