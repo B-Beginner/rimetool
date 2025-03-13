@@ -1,9 +1,8 @@
 import os
 from rimetool.utils import vcf
-from rimetool.utils import simple_english
-from rimetool.utils import simple_chinese
-from rimetool.utils import tosogou
-from rimetool.utils import Epub_Processor
+from rimetool.utils import singleword
+from rimetool.utils import singlechinese
+from rimetool.utils import tosougou
 import argparse
 
 help_text = """
