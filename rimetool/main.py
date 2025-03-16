@@ -1,8 +1,9 @@
 import os
-from rimetool.utils import vcf
-from rimetool.utils import singleword
-from rimetool.utils import singlechinese
-from rimetool.utils import tosougou
+import sys
+from rimetool.utils import Epub_Processor, vcf
+from rimetool.utils import simple_english
+from rimetool.utils import simple_chinese
+from rimetool.utils import tosogou
 import argparse
 
 help_text = """
@@ -61,18 +62,18 @@ def get_args_parser(add_help=True):
 def main():
     parser = get_args_parser()
     args = parser.parse_args()
-    
+    name = ""
     if not os.path.exists(args.output_path):
         os.makedirs(args.output_path)
     os.makedirs(args.output_path, exist_ok=True)
     if args.tool == 'vcf':
-        vcf.main(args.input_path, args.output_path)
+        name = vcf.main(args.input_path, args.output_path)
     elif args.tool in ['simple-english', 'se']:
-        simple_english.main(args.input_path, args.output_path)
+        name = simple_english.main(args.input_path, args.output_path)
     elif args.tool in ['simple-chinese', 'sc']:
-        simple_chinese.main(args.input_path, args.output_path)
+        name = simple_chinese.main(args.input_path, args.output_path)
     elif args.tool == 'tosougou':
-        tosogou.main(args.input_path, args.output_path)
+        name = tosogou.main(args.input_path, args.output_path)
     elif args.tool == 'epub':
         output_dir = args.output_path
         output_files = {
@@ -95,6 +96,18 @@ def main():
             raise ValueError('请选择正确的EPUB处理模式')
     else:
         raise ValueError('请选择正确的工具。')
+    return name
+def main_with_args(args_list):
+    """
+    用于在GUI中调用
+    """
+    original_argv = sys.argv
+    sys.argv = [''] + args_list  # 设置命令行参数
+    try:
+        name = main()
+    finally:
+        sys.argv = original_argv  # 恢复原始的命令行参数
+    return name
 
 if __name__ == "__main__":
     main()
