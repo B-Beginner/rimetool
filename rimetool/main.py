@@ -59,7 +59,7 @@ def get_args_parser(add_help=True):
     parser.add_argument('--mode', '-m', required=False, choices=list(mode_choices.keys()))
     return parser
 
-def main():
+def main(output_files=None):
     parser = get_args_parser()
     args = parser.parse_args()
     name = ""
@@ -76,11 +76,12 @@ def main():
         name = tosogou.main(args.input_path, args.output_path)
     elif args.tool == 'epub':
         output_dir = args.output_path
-        output_files = {
-            'clean': os.path.join(output_dir, "epub转txt.txt"),
-            'short': os.path.join(output_dir, "短句拆分.txt"),
-            'long': os.path.join(output_dir, "长句拆分.txt")
-        }
+        if not output_files:
+            output_files = {
+                'clean': os.path.join(output_dir, "epub转txt.txt"),
+                'short': os.path.join(output_dir, "短句拆分.txt"),
+                'long': os.path.join(output_dir, "长句拆分.txt")
+            }
         processor = Epub_Processor.EpubProcessor(args.input_path, output_dir, output_files)
         
         mode = mode_choices[args.mode]
@@ -104,7 +105,22 @@ def main_with_args(args_list):
     original_argv = sys.argv
     sys.argv = [''] + args_list  # 设置命令行参数
     try:
-        name = main()
+        parser = get_args_parser()
+        args = parser.parse_args(args_list)
+        output_files = None
+        if args.tool == 'epub':
+            output_dir = args.output_path
+            output_files = {
+                'clean': os.path.join(output_dir, "epub转txt.txt"),
+                'short': os.path.join(output_dir, "短句拆分.txt"),
+                'long': os.path.join(output_dir, "长句拆分.txt")
+            }
+            # 这里可以根据需要将 output_files 以某种方式传递给后续处理逻辑
+            # 比如将其添加到 args 对象中
+            # setattr(args, 'output_files', output_files)
+            sys.argv = [''] + args_list 
+            # + [f"--output-files={output_files}"]  # 这行可根据实际情况调整
+        name = main(output_files)
     finally:
         sys.argv = original_argv  # 恢复原始的命令行参数
     return name

@@ -2,7 +2,6 @@ from flask import Flask, request, render_template, make_response
 import os
 import logging
 import traceback
-from rimetool.utils import Epub_Processor
 from rimetool.main import main_with_args as rimetool_main
 from flask_cors import CORS  # 导入 CORS
 
@@ -50,51 +49,6 @@ def process_file():
         logger.debug(f"表单数据: {request.form}")
         logger.debug(f"文件数据: {request.files}")
 
-        input_path = None
-        output_path = None
-        if 'file' in request.files:
-            file = request.files['file']
-            if not file.filename:
-                logger.warning("文件名为空")
-                return make_response('请选择文件', 400)
-            files = [file]
-            
-            # 上传文件的路径
-            input_path = os.path.join(UPLOAD_FOLDER, file.filename)
-            output_path = os.path.join(OUTPUT_FOLDER, file.filename)
-        elif 'files[]' in request.files:
-            files = request.files.getlist('files[]')
-            logger.info(f"🤔上传的文件: {files}")
-            if not files:
-                logger.warning("请求中没有文件")
-                return make_response('请选择文件', 400)
-            
-            # 上传文件的路径
-            input_path = UPLOAD_FOLDER
-            output_path = OUTPUT_FOLDER
-        else:
-            logger.warning("请求中没有文件")
-            return make_response('请选择文件', 400)
-        
-        # # 替换路径中的斜杠
-        # input_path = input_path.replace('\/', '\\')
-        # output_path = output_path.replace('\/', '\\')
-        # logger.info(f"上传文件的路径: {input_path}")
-        # logger.info(f"输出文件的路径: {output_path}")
-
-        # if 'file' not in request.files:
-        #     logger.warning("请求中没有文件")
-        #     return make_response('请选择文件', 400)
-
-        # file = request.files['file']
-        # if not file.filename:
-        #     logger.warning("文件名为空")
-        #     return make_response('请选择文件', 400)
-
-
-        # logger.info(f"保存上传文件到: {input_path}")
-        # file.save(input_path)
-
         # 获取参数
         tool = request.form.get('tool')
         mode = request.form.get('mode')
@@ -104,6 +58,39 @@ def process_file():
             tool = 'epub'
 
         logger.info(f"处理参数 - 工具: {tool}, 模式: {mode}")
+
+        input_path = None
+        output_path = None
+        output_files = None
+        if 'file' in request.files: # 非epub的单个文件
+            file = request.files['file']
+            if not file.filename:
+                logger.warning("文件名为空")
+                return make_response('请选择文件', 400)
+            files = [file]
+            
+            # 上传文件的路径, 对单个文件而言是文件本身的路径
+            input_path = os.path.join(UPLOAD_FOLDER, file.filename)
+            output_path = os.path.join(OUTPUT_FOLDER, tool+"_output")
+        elif 'files[]' in request.files: # epub的文件夹
+            files = request.files.getlist('files[]')
+            
+            if not files:
+                logger.warning("请求中没有文件")
+                return make_response('请选择文件', 400)
+            
+            # 上传文件的路径，对epub而言，是.epub文件夹的路径
+            input_path = os.path.join(UPLOAD_FOLDER, files[0].filename.split("/")[0])
+            output_path = os.path.join(OUTPUT_FOLDER, files[0].filename.split("/")[0]+"_output")
+            # logger.info(f"🤔request.files: {request.files}")
+            # output_folder = request.form.get('output_folder') # todo
+        else:
+            logger.warning("请求中没有文件")
+            return make_response('请选择文件', 400)
+        
+        # logger.info(f"🤔上传文件的路径: {input_path}")
+        # logger.info(f"🤔输出文件的路径: {output_path}")
+
 
         # 构建参数列表
         args = ['--input-path', input_path, '--output-path', output_path, '--tool', tool]

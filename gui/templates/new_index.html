@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 
-<body class="bg-background text-foreground flex flex-col items-center justify-center h-screen p-4">
+<body class="bg-background text-foreground flex flex-col items-center justify-center p-4">
     <h1 class="text-5xl font-bold text-primary mb-6">RimeTool GUI</h1>
 
     <div id="error" class="error hidden text-destructive bg-red-100 border border-red-400 p-4 rounded mb-4"></div>
@@ -26,7 +26,7 @@
         <h2 class="text-xl font-bold mb-4">文件输入</h2>
         <label for="file" class="block font-bold mb-2">选择文件：</label>
         <label for="file" class="file-label">📂 选择文件 </label>
-        <input type="file" id="file" required class="border border-border rounded p-2 mb-4 w-full" />
+        <input type="file" id="file" required class="border border-border rounded p-2 mb-4 w-full"  />
         <input type="text" id="file-path" class="border border-border rounded p-2 mb-4 w-full" placeholder="未选择文件" readonly />
 
         <label for="tool" class="block font-bold mb-2">选择工具：</label>
@@ -44,25 +44,55 @@
             class="bg-primary text-primary-foreground  rounded p-2 w-full transition duration-300">处理文件</button>
     </div>
 
-    <!-- EPUB 文件夹输入部分 -->
-    <div class="bg-card p-6 rounded-lg shadow-lg form-container">
-        <h2 class="text-xl font-bold mb-4">EPUB 文件夹输入</h2>
-        <label for="folder" class="block font-bold mb-2">选择 EPUB 文件夹：</label>
-        <label for="folder" class="file-label">📂 选择文件夹 </label>
-        <input type="file" id="folder" required class="border border-border rounded p-2 mb-4 w-full" webkitdirectory directory />
-        <input type="text" id="folder-path" class="border border-border rounded p-2 mb-4 w-full" placeholder="未选择文件夹" readonly />
+    <!-- EPUB 文件夹输入部分（选项 1 和 4） -->
+    <div class="bg-card p-6 rounded-lg shadow-lg form-container mb-4">
+        <h2 class="text-xl font-bold mb-4">EPUB 文件夹输入（选项 1 和 4）</h2>
+        <label for="folder-1-4" class="block font-bold mb-2">选择 EPUB 文件夹：</label>
+        <label for="folder-1-4" class="file-label">📂 选择文件夹 </label>
+        <input type="file" id="folder-1-4" required class="border border-border rounded p-2 mb-4 w-full" webkitdirectory directory accept=".epub" />
+        <input type="text" id="folder-path-1-4" class="border border-border rounded p-2 mb-4 w-full" placeholder="未选择文件夹" readonly />
 
-        <label for="mode" class="block font-bold mb-2">模式（可选）：</label>
-        <select id="mode-folder" class="border border-border rounded p-2 mb-4 w-full" >
-            <option value="selection">请选择模式</option>
+        <label for="output-folder-1-4" class="block font-bold mb-2">选择输出文件夹：</label>
+        <label for="output-folder-1-4" class="file-label">📂 选择文件夹 </label>
+        <input type="file" id="output-folder-1-4" required class="border border-border rounded p-2 mb-4 w-full" webkitdirectory directory />
+        <input type="text" id="output-folder-path-1-4" class="border border-border rounded p-2 mb-4 w-full" placeholder="未选择输出文件夹" readonly />
+
+        <label for="mode-1-4" class="block font-bold mb-2">模式（可选）：</label>
+        <select id="mode-1-4" class="border border-border rounded p-2 mb-4 w-full">
             <option value="epub_to_txt">1. epub_to_txt - 将 EPUB 转换为纯文本</option>
-            <option value="txt_to_short_long">2. txt_to_short_long - 将文本转换为短句和长句</option>
-            <option value="txt_to_rime">3. txt_to_rime - 将文本转换为 rime 格式</option>
             <option value="epub_to_rime">4. epub_to_rime - 完整的 EPUB 到 rime 转换流程</option>
         </select>
 
-        <button onclick="processFile('folder')"
+
+
+        <button onclick="processFile('folder-1-4')"
             class="bg-primary text-primary-foreground  rounded p-2 w-full transition duration-300">处理文件夹</button>
+    </div>
+
+
+    
+
+    <!-- EPUB 文件输入部分（选项 2 和 3） -->
+    <div class="bg-card p-6 rounded-lg shadow-lg form-container">
+        <h2 class="text-xl font-bold mb-4">EPUB 文件输入（选项 2 和 3）</h2>
+        <label for="file-2-3" class="block font-bold mb-2">选择 EPUB 文件：</label>
+        <label for="file-2-3" class="file-label">📂 选择文件 </label>
+        <input type="file" id="file-2-3" required class="border border-border rounded p-2 mb-4 w-full"  />
+        <input type="text" id="file-path-2-3" class="border border-border rounded p-2 mb-4 w-full" placeholder="未选择文件" readonly />
+
+        <label for="output-folder-2-3" class="block font-bold mb-2">选择输出文件夹：</label>
+        <label for="output-folder-2-3" class="file-label">📂 选择文件夹 </label>
+        <input type="file" id="output-folder-2-3" required class="border border-border rounded p-2 mb-4 w-full" webkitdirectory directory />
+        <input type="text" id="output-folder-path-2-3" class="border border-border rounded p-2 mb-4 w-full" placeholder="未选择输出文件夹" readonly />
+
+        <label for="mode-2-3" class="block font-bold mb-2">模式（可选）：</label>
+        <select id="mode-2-3" class="border border-border rounded p-2 mb-4 w-full">
+            <option value="txt_to_short_long">2. txt_to_short_long - 将文本转换为短句和长句</option>
+            <option value="txt_to_rime">3. txt_to_rime - 将文本转换为 rime 格式</option>
+        </select>
+
+        <button onclick="processFile('file-2-3')"
+            class="bg-primary text-primary-foreground  rounded p-2 w-full transition duration-300">处理文件</button>
     </div>
 
     <script>
@@ -84,9 +114,9 @@
             }
         });
 
-        // 文件夹选择事件
-        document.getElementById('folder').addEventListener('change', function () {
-            const folderPathInput = document.getElementById('folder-path');
+        // 文件夹选择事件（选项 1 和 4）
+        document.getElementById('folder-1-4').addEventListener('change', function () {
+            const folderPathInput = document.getElementById('folder-path-1-4');
             if (this.files.length > 0) {
                 const firstFile = this.files[0];
                 const folderPath = firstFile.webkitRelativePath.split('/')[0];
@@ -96,31 +126,62 @@
             }
         });
 
+        // 输出文件夹选择事件（选项 1 和 4）
+        document.getElementById('output-folder-1-4').addEventListener('change', function () {
+            const outputFolderPathInput = document.getElementById('output-folder-path-1-4');
+            if (this.files.length > 0) {
+                const firstFile = this.files[0];
+                const folderPath = firstFile.webkitRelativePath.split('/')[0];
+                outputFolderPathInput.value = folderPath;
+            } else {
+                outputFolderPathInput.value = '未选择输出文件夹';
+            }
+        });
+
+        // 文件选择事件（选项 2 和 3）
+        document.getElementById('file-2-3').addEventListener('change', function () {
+            const filePathInput = document.getElementById('file-path-2-3');
+            if (this.files.length > 0) {
+                filePathInput.value = this.files[0].name;
+            } else {
+                filePathInput.value = '未选择文件';
+            }
+        });
+
+        // 输出文件夹选择事件（选项 2 和 3）
+        document.getElementById('output-folder-2-3').addEventListener('change', function () {
+            const outputFolderPathInput = document.getElementById('output-folder-path-2-3');
+            if (this.files.length > 0) {
+                const firstFile = this.files[0];
+                const folderPath = firstFile.webkitRelativePath.split('/')[0];
+                outputFolderPathInput.value = folderPath;
+            } else {
+                outputFolderPathInput.value = '未选择输出文件夹';
+            }
+        });
+
         function processFile(type) {
             log('开始处理');
 
-            let fileOrFolderInput, toolOrModeInput, pathInput;
-            let fileOrFolder, toolOrMode, path;
+            let fileOrFolderInput, toolOrModeInput, pathInput, outputFolderInput, outputFolderPathInput;
+            let toolOrMode, outputFolderPath;
 
             if (type === 'file') {
                 fileOrFolderInput = document.getElementById('file');
                 toolOrModeInput = document.getElementById('tool-file');
                 pathInput = document.getElementById('file-path');
-
-                fileOrFolder = fileOrFolderInput.files[0];
-                toolOrMode = toolOrModeInput.value;
-                path = pathInput.value;
-            } else if (type === 'folder') {
-                fileOrFolderInput = document.getElementById('folder');
-                toolOrModeInput = document.getElementById('mode-folder');
-                pathInput = document.getElementById('folder-path');
-
-                if (fileOrFolderInput.files.length > 0) {
-                    const firstFile = fileOrFolderInput.files[0];
-                    fileOrFolder = firstFile.webkitRelativePath.split('/')[0];
-                }
-                toolOrMode = toolOrModeInput.value;
-                path = pathInput.value;
+            } else if (type === 'folder-1-4') {
+                fileOrFolderInput = document.getElementById('folder-1-4');
+                toolOrModeInput = document.getElementById('mode-1-4');
+                pathInput = document.getElementById('folder-path-1-4');
+                outputFolderInput = document.getElementById('output-folder-1-4');
+                outputFolderPathInput = document.getElementById('output-folder-path-1-4');
+            } else if (type === 'file-2-3') {
+                fileOrFolderInput = document.getElementById('file-2-3');
+                toolOrModeInput = document.getElementById('mode-2-3');
+                pathInput = document.getElementById('file-path-2-3');
+                outputFolderInput = document.getElementById('output-folder-2-3');
+                outputFolderPathInput = document.getElementById('output-folder-path-2-3');
             }
 
             const loading = document.getElementById('loading');
@@ -128,31 +189,51 @@
             const success = document.getElementById('success');
 
             // 检查文件或文件夹
-
-            if ((type === 'file' && fileOrFolderInput.files.length === 0) || (type === 'folder' && fileOrFolderInput.files.length === 0)) {
-                const errorMsg = type === 'file' ? '请选择文件' : '请选择文件夹';
+            if ((type === 'file' && fileOrFolderInput.files.length === 0) ||
+                (type === 'folder-1-4' && fileOrFolderInput.files.length === 0) ||
+                (type === 'file-2-3' && fileOrFolderInput.files.length === 0)) {
+                const errorMsg = type === 'file' || type === 'file-2-3' ? '请选择文件' : '请选择文件夹';
                 log(errorMsg, 'error');
                 error.textContent = errorMsg;
                 error.style.display = 'block';
                 return;
             }
 
+            // 检查输出文件夹
+            if ((type === 'folder-1-4' || type === 'file-2-3') && outputFolderInput.files.length === 0) {
+                const errorMsg = '请选择输出文件夹';
+                log(errorMsg, 'error');
+                error.textContent = errorMsg;
+                error.style.display = 'block';
+                return;
+            }
 
             toolOrMode = toolOrModeInput.value;
+            if (type === 'folder-1-4' || type === 'file-2-3') {
+                outputFolderPath = outputFolderPathInput.value;
+            }
 
             // 准备表单数据
             const formData = new FormData();
             if (type === 'file') {
                 formData.append('file', fileOrFolderInput.files[0]);
                 formData.append('tool', toolOrMode);
-            } else if (type === 'folder') {
+            } else if (type === 'folder-1-4') {
                 for (let i = 0; i < fileOrFolderInput.files.length; i++) {
                     formData.append('files[]', fileOrFolderInput.files[i]);
                 }
                 formData.append('mode', toolOrMode);
+                formData.append('output_folder', outputFolderPath);
+            } else if (type === 'file-2-3') {
+                formData.append('file-2-3', fileOrFolderInput.files[0]);
+                formData.append('mode', toolOrMode);
+                formData.append('output_folder', outputFolderPath);
             }
 
             log(`准备发送请求 - ${type}: ${pathInput.value}, ${type === 'file' ? '工具' : '模式'}: ${toolOrMode}`);
+            if (outputFolderPath) {
+                log(`输出文件夹: ${outputFolderPath}`);
+            }
 
             // 更新 UI 状态
             loading.style.display = 'block';
