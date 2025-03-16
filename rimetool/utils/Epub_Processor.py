@@ -234,7 +234,7 @@ class EpubProcessor:
 
     def txt_short_long_to_rime(self, output_files):
         """
-        第三个部分: 将txt原版、短词组、长词组词库转成rime格式，并替换"俞"字拼音为"shu"
+        第三个部分: 将txt原版、短词组、长词组词库转成rime格式
         """
         print("\n*** 第三部分: 将txt原版、短词组、长词组词库转成rime格式，并替换俞字拼音为shu ***\n")
         # 第四步：生成rime格式

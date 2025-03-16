@@ -9,7 +9,7 @@ from flask_cors import CORS  # 导入 CORS
 app = Flask(__name__)
 # 启用 CORS
 # CORS(app, origins="http://127.0.0.1:5500")  # 允许来自 http://127.0.0.1:5500 的请求
-CORS(app, origins="*")  # 允许来自 http://127.0.0.1:5500 的请求
+CORS(app, origins="*") 
 
 # 配置详细的日志
 logging.basicConfig(
@@ -69,7 +69,7 @@ def process_file():
         # 获取参数
         tool = request.form.get('tool')
         mode = request.form.get('mode')
-        logger.info(f"处理参数 - 工具: {tool},\n 模式: {mode}")
+        logger.info(f"处理参数 - 工具: {tool}, 模式: {mode}")
 
         # 构建参数列表
         args = ['--input-path', input_path, '--output-path', output_path, '--tool', tool]

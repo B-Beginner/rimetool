@@ -16,7 +16,8 @@
     <div id="success" class="success hidden text-accent bg-yellow-100 border border-yellow-400 p-4 rounded mb-4"></div>
     <div id="loading" class="loading text-secondary hidden">处理中，请稍候...</div>
 
-    <div id="debug-info" class="debug-info hidden bg-zinc-100 border border-zinc-300 p-4 rounded mb-4 rounded-lg shadow-lg ">
+    <div id="debug-info"
+        class="debug-info hidden bg-zinc-100 border border-zinc-300 p-4 rounded mb-4 rounded-lg shadow-lg ">
         <h3 class="font-semibold">调试信息：</h3>
         <pre id="debug-content"></pre>
     </div>
@@ -29,24 +30,65 @@
 
         <label for="tool" class="block font-bold mb-2">选择工具：</label>
         <select id="tool" required class="border border-border rounded p-2 mb-4 w-full">
+            <option value="hello">请选择工具</option>
             <option value="vcf">VCF</option>
-            <option value="simple-english">Simple English</option>
+            <!-- <option value="simple-english">Simple English</option> -->
             <option value="se">Simple English (se)</option>
-            <option value="simple-chinese">Simple Chinese</option>
+            <!-- <option value="simple-chinese">Simple Chinese</option> -->
             <option value="sc">Simple Chinese (sc)</option>
             <option value="tosougou">To Sogou</option>
             <option value="epub">EPUB</option>
-            <option value="hello">Hello</option>
         </select>
 
         <label for="mode" class="block font-bold mb-2">模式（可选）：</label>
-        <input type="text" id="mode" class="border border-border rounded p-2 mb-4 w-full" />
-
+        <select id="mode" class="border border-border rounded p-2 mb-4 w-full" disabled>
+            <option value="">请选择工具后查看可选模式</option>
+        </select>
         <button onclick="processFile(event)"
             class="bg-primary text-primary-foreground  rounded p-2 w-full transition duration-300">处理文件</button>
     </div>
 
     <script>
+        // 定义模式选项映射
+        const modeOptions = {
+            epub: [
+                { value: '--mode 1', text: '1. epub_to_txt - 将EPUB转换为纯文本' },
+                { value: '--mode 2', text: '2. txt_to_short_long - 将文本转换为短句和长句' },
+                { value: '--mode 3', text: '3. txt_to_rime - 将文本转换为rime格式' },
+                { value: '--mode 4', text: '4. epub_to_rime - 完整的EPUB到rime转换流程' }
+            ]
+        };
+
+        // 获取选择工具和模式的下拉框元素
+        const toolSelect = document.getElementById('tool');
+        const modeSelect = document.getElementById('mode');
+
+        // 添加选择工具下拉框的 change 事件监听器
+        toolSelect.addEventListener('change', function () {
+            const selectedTool = this.value;
+            // 清空模式下拉框的现有选项
+            modeSelect.innerHTML = '';
+
+            if (selectedTool === 'epub') {
+                // 如果选择的工具是 epub，添加对应的模式选项
+                modeOptions[selectedTool].forEach(option => {
+                    const newOption = document.createElement('option');
+                    newOption.value = option.value;
+                    newOption.textContent = option.text;
+                    modeSelect.appendChild(newOption);
+                });
+                modeSelect.disabled = false;
+            } else {
+                // 其他工具，添加禁用提示选项
+                const disabledOption = document.createElement('option');
+                disabledOption.value = '';
+                disabledOption.textContent = '此工具无需选择模式';
+                modeSelect.appendChild(disabledOption);
+                modeSelect.disabled = true;
+            }
+        });
+
+
         function log(message, type = 'info') {
             console.log(`[${type.toUpperCase()}] ${message}`);
             const debugContent = document.getElementById('debug-content');
@@ -56,16 +98,12 @@
         }
 
         function processFile(event) {
-            // 阻止默认的表单提交行为
-            event.preventDefault();
-        }
-
-        function processFile() {
             log('开始处理文件');
 
             const fileInput = document.getElementById('file');
             const tool = document.getElementById('tool').value;
             const mode = document.getElementById('mode').value;
+            // log("tool=", tool, "mode=", mode);  // 去后端看
             const loading = document.getElementById('loading');
             const error = document.getElementById('error');
             const success = document.getElementById('success');
@@ -115,24 +153,6 @@
 
                     // return response.blob();
                 })
-                // .then(blob => {
-                //     log('处理成功，准备下载文件');
-                //     loading.style.display = 'none';
-                //     success.textContent = '处理成功！正在下载文件...';
-                //     success.style.display = 'block';
-
-                //     // 下载文件
-                //     const url = window.URL.createObjectURL(blob);
-                //     const a = document.createElement('a');
-                //     a.href = url;
-                //     a.download = fileInput.files[0].name;
-                //     document.body.appendChild(a);
-                //     a.click();
-                //     window.URL.revokeObjectURL(url);
-                //     a.remove();
-
-                //     log('文件下载已开始');
-                // })
                 .catch(err => {
                     const errorMsg = err.message || '未知错误';
                     log(`发生错误: ${errorMsg}`, 'error');
@@ -146,11 +166,6 @@
         window.onload = function () {
             log('页面已加载完成');
         };
-
-
-        // document.querySelector('.file-label').addEventListener('click', function () {
-        //     document.getElementById('file').click();
-        // });
 
         document.getElementById('file').addEventListener('change', function () {
             const filePathInput = document.getElementById('file-path');
