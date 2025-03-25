@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 import sys
 from rimetool.utils import Epub_Processor, vcf
@@ -60,6 +61,7 @@ def get_args_parser(add_help=True):
     return parser
 
 def main(output_files=None):
+    current_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     parser = get_args_parser()
     args = parser.parse_args()
     name = ""
@@ -76,21 +78,25 @@ def main(output_files=None):
         name = tosogou.main(args.input_path, args.output_path)
     elif args.tool == 'epub':
         output_dir = args.output_path
-        if not output_files:
-            output_files = {
-                'clean': os.path.join(output_dir, "epub转txt.txt"),
-                'short': os.path.join(output_dir, "短句拆分.txt"),
-                'long': os.path.join(output_dir, "长句拆分.txt")
-            }
-        processor = Epub_Processor.EpubProcessor(args.input_path, output_dir, output_files)
+        # if not output_files:
+        #     print("i'm here")
+        output_files = {
+            'clean': os.path.join(output_dir, "epub转txt.txt"),
+            'short': os.path.join(output_dir, "短句拆分.txt"),
+            'long': os.path.join(output_dir, "长句拆分.txt")
+        }
+        # print("🤔output_files:")
+        print(output_files)
+        processor = Epub_Processor.EpubProcessor(args.input_path, output_dir, output_files,current_time)
         
+        # print("🤔args.input_path:"+args.input_path)
         mode = mode_choices[args.mode]
         if mode == 'epub_to_txt':
             processor.epub_to_txt()
         elif mode == 'txt_to_short_long':
             processor.txt_to_short_long(args.input_path, output_files)
         elif mode == 'txt_to_rime':
-            processor.txt_to_rime_all(output_files)
+            processor.txt_to_rime_all(args.input_path,output_files)
         elif mode == 'epub_to_rime':
             processor.epub_to_rime(output_files)
         else:
@@ -108,6 +114,7 @@ def main_with_args(args_list):
         parser = get_args_parser()
         args = parser.parse_args(args_list)
         output_files = None
+        print("args.tool:"+args.tool)
         if args.tool == 'epub':
             output_dir = args.output_path
             output_files = {

@@ -13,8 +13,8 @@
     <h1 class="text-5xl font-bold text-primary mb-6">RimeTool GUI</h1>
 
     <div id="error" class="error hidden text-destructive bg-red-100 border border-red-400 p-4 rounded mb-4"></div>
-    <div id="success" class="success hidden text-accent bg-yellow-100 border border-yellow-400 p-4 rounded mb-4"></div>
-    <div id="loading" class="loading text-secondary hidden">处理中，请稍候...</div>
+    <!-- <div id="success" class="success hidden text-accent bg-yellow-100 border border-yellow-400 p-4 rounded mb-4">处理成功！</div>
+    <div id="loading" class="loading text-secondary hidden">处理中，请稍候...</div>  -->
 
     <div id="debug-info" class="debug-info hidden bg-zinc-100 border border-zinc-300 p-4 rounded mb-4 rounded-lg shadow-lg ">
         <h3 class="font-semibold">调试信息：</h3>
@@ -23,7 +23,7 @@
 
     <!-- 文件输入部分 -->
     <div class="bg-card p-6 rounded-lg shadow-lg form-container mb-4">
-        <h2 class="text-xl font-bold mb-4">文件输入</h2>
+        <h2 class="text-xl font-bold mb-4">非epub文件输入</h2>
         <label for="file" class="block font-bold mb-2">选择文件：</label>
         <label for="file" class="file-label">📂 选择文件 </label>
         <input type="file" id="file" required class="border border-border rounded p-2 mb-4 w-full"  />
@@ -46,18 +46,18 @@
 
     <!-- EPUB 文件夹输入部分（选项 1 和 4） -->
     <div class="bg-card p-6 rounded-lg shadow-lg form-container mb-4">
-        <h2 class="text-xl font-bold mb-4">EPUB 文件夹输入（选项 1 和 4）</h2>
+        <h2 class="text-xl font-bold mb-4">EPUB 文件夹输入 - 转 txt 或 rime</h2>
         <label for="folder-1-4" class="block font-bold mb-2">选择 EPUB 文件夹：</label>
         <label for="folder-1-4" class="file-label">📂 选择文件夹 </label>
         <input type="file" id="folder-1-4" required class="border border-border rounded p-2 mb-4 w-full" webkitdirectory directory accept=".epub" />
         <input type="text" id="folder-path-1-4" class="border border-border rounded p-2 mb-4 w-full" placeholder="未选择文件夹" readonly />
 
-        <label for="output-folder-1-4" class="block font-bold mb-2">选择输出文件夹：</label>
+        <label for="output-folder-1-4" class="block font-bold mb-2">选择输出文件夹：（建议选择 outputs 根目录）</label>
         <label for="output-folder-1-4" class="file-label">📂 选择文件夹 </label>
         <input type="file" id="output-folder-1-4" required class="border border-border rounded p-2 mb-4 w-full" webkitdirectory directory />
         <input type="text" id="output-folder-path-1-4" class="border border-border rounded p-2 mb-4 w-full" placeholder="未选择输出文件夹" readonly />
 
-        <label for="mode-1-4" class="block font-bold mb-2">模式（可选）：</label>
+        <label for="mode-1-4" class="block font-bold mb-2">模式选择：</label>
         <select id="mode-1-4" class="border border-border rounded p-2 mb-4 w-full">
             <option value="epub_to_txt">1. epub_to_txt - 将 EPUB 转换为纯文本</option>
             <option value="epub_to_rime">4. epub_to_rime - 完整的 EPUB 到 rime 转换流程</option>
@@ -74,18 +74,18 @@
 
     <!-- EPUB 文件输入部分（选项 2 和 3） -->
     <div class="bg-card p-6 rounded-lg shadow-lg form-container">
-        <h2 class="text-xl font-bold mb-4">EPUB 文件输入（选项 2 和 3）</h2>
-        <label for="file-2-3" class="block font-bold mb-2">选择 EPUB 文件：</label>
+        <h2 class="text-xl font-bold mb-4">EPUB 之 txt 转长短句，或 txt 转 rime</h2>
+        <label for="file-2-3" class="block font-bold mb-2">选择 txt 文件：</label>
         <label for="file-2-3" class="file-label">📂 选择文件 </label>
         <input type="file" id="file-2-3" required class="border border-border rounded p-2 mb-4 w-full"  />
         <input type="text" id="file-path-2-3" class="border border-border rounded p-2 mb-4 w-full" placeholder="未选择文件" readonly />
 
-        <label for="output-folder-2-3" class="block font-bold mb-2">选择输出文件夹：</label>
+        <label for="output-folder-2-3" class="block font-bold mb-2">选择输出文件夹：（建议选择 outputs 根目录）</label>
         <label for="output-folder-2-3" class="file-label">📂 选择文件夹 </label>
         <input type="file" id="output-folder-2-3" required class="border border-border rounded p-2 mb-4 w-full" webkitdirectory directory />
         <input type="text" id="output-folder-path-2-3" class="border border-border rounded p-2 mb-4 w-full" placeholder="未选择输出文件夹" readonly />
 
-        <label for="mode-2-3" class="block font-bold mb-2">模式（可选）：</label>
+        <label for="mode-2-3" class="block font-bold mb-2">模式选择：</label>
         <select id="mode-2-3" class="border border-border rounded p-2 mb-4 w-full">
             <option value="txt_to_short_long">2. txt_to_short_long - 将文本转换为短句和长句</option>
             <option value="txt_to_rime">3. txt_to_rime - 将文本转换为 rime 格式</option>
@@ -184,9 +184,9 @@
                 outputFolderPathInput = document.getElementById('output-folder-path-2-3');
             }
 
-            const loading = document.getElementById('loading');
+            // const loading = document.getElementById('loading');
             const error = document.getElementById('error');
-            const success = document.getElementById('success');
+            // const success = document.getElementById('success');
 
             // 检查文件或文件夹
             if ((type === 'file' && fileOrFolderInput.files.length === 0) ||
@@ -225,7 +225,7 @@
                 formData.append('mode', toolOrMode);
                 formData.append('output_folder', outputFolderPath);
             } else if (type === 'file-2-3') {
-                formData.append('file-2-3', fileOrFolderInput.files[0]);
+                formData.append('file', fileOrFolderInput.files[0]);
                 formData.append('mode', toolOrMode);
                 formData.append('output_folder', outputFolderPath);
             }
@@ -236,9 +236,9 @@
             }
 
             // 更新 UI 状态
-            loading.style.display = 'block';
+            // loading.style.display = 'block';
             error.style.display = 'none';
-            success.style.display = 'none';
+            // success.style.display = 'none';
 
             // 发送请求
             fetch('http://127.0.0.1:5000/process', {
@@ -256,14 +256,18 @@
                             throw new Error(text);
                         });
                     }
+                    // loading.style.display = 'none';
+                    error.style.display = 'none';
+                    // success.style.display = 'block';
                     log('处理成功，处理好的文件位于 gui/outputs 文件夹中！');
+                    log('详细路径请查看后端信息');
 
                     // return response.blob();
                 })
               .catch(err => {
                     const errorMsg = err.message || '未知错误';
                     log(`发生错误: ${errorMsg}`, 'error');
-                    loading.style.display = 'none';
+                    // loading.style.display = 'none';
                     error.textContent = '错误：' + errorMsg;
                     error.style.display = 'block';
                 });

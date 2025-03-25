@@ -4,7 +4,9 @@ import logging
 import traceback
 from rimetool.main import main_with_args as rimetool_main
 from flask_cors import CORS  # 导入 CORS
-
+"""
+使用方法：运行本文件，然后打开new_index.html，右键点击 Open in Browser 预览选项
+"""
 app = Flask(__name__)
 # 启用 CORS
 # CORS(app, origins="http://127.0.0.1:5500")  # 允许来自 http://127.0.0.1:5500 的请求
@@ -54,7 +56,8 @@ def process_file():
         mode = request.form.get('mode')
 
         # 处理文件夹中的 EPUB 文件时设置默认工具
-        if 'files[]' in request.files and not tool:
+        if not tool:
+        # if 'files[]' in request.files and not tool:
             tool = 'epub'
 
         logger.info(f"处理参数 - 工具: {tool}, 模式: {mode}")
@@ -81,7 +84,7 @@ def process_file():
             
             # 上传文件的路径，对epub而言，是.epub文件夹的路径
             input_path = os.path.join(UPLOAD_FOLDER, files[0].filename.split("/")[0])
-            output_path = os.path.join(OUTPUT_FOLDER, files[0].filename.split("/")[0]+"_output")
+            output_path = os.path.join(OUTPUT_FOLDER, tool+"_output")
             # logger.info(f"🤔request.files: {request.files}")
             # output_folder = request.form.get('output_folder') # todo
         else:
