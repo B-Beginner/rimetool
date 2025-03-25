@@ -7,6 +7,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RimeTool GUI</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .toast-container {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+        }
+        .toast {
+            margin-bottom: 0.5rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            min-width: 300px;
+            max-width: 500px;
+            animation: slideIn 0.3s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            word-wrap: break-word;
+        }
+        .toast-success {
+            background-color: #10B981;
+            color: white;
+        }
+        .toast-error {
+            background-color: #EF4444;
+            color: white;
+        }
+        .toast-info {
+            background-color: #3B82F6;
+            color: white;
+        }
+        .toast-warning {
+            background-color: #F59E0B;
+            color: white;
+        }
+        #debug-content {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
 </head>
 
 <body class="bg-background text-foreground flex flex-col items-center justify-center p-4">
@@ -16,8 +66,10 @@
     <!-- <div id="success" class="success hidden text-accent bg-yellow-100 border border-yellow-400 p-4 rounded mb-4">处理成功！</div>
     <div id="loading" class="loading text-secondary hidden">处理中，请稍候...</div>  -->
 
+    <div id="toast-container" class="toast-container"></div>
+
     <div id="debug-info" class="debug-info hidden bg-zinc-100 border border-zinc-300 p-4 rounded mb-4 rounded-lg shadow-lg ">
-        <h3 class="font-semibold">调试信息：</h3>
+        <h3 class="font-semibold">调试信息汇总：</h3>
         <pre id="debug-content"></pre>
     </div>
 
@@ -99,9 +151,39 @@
         function log(message, type = 'info') {
             console.log(`[${type.toUpperCase()}] ${message}`);
             const debugContent = document.getElementById('debug-content');
+
+            // 创建toast元素
+            const toast = document.createElement('div');
             const timestamp = new Date().toLocaleTimeString();
             debugContent.textContent += `[${timestamp}] ${message}\n`;
             document.getElementById('debug-info').style.display = 'block';
+
+            // 如果是成功处理文件的消息，使用success类型
+            if (message.includes('处理成功') && message.includes('outputs')) {
+                type = 'success';
+            }
+
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <div class="flex items-center">
+                    <span class="font-bold mr-2">[${timestamp}]</span>
+                    <span>${message}</span>
+                </div>
+            `;
+
+            // 添加到容器
+            const container = document.getElementById('toast-container');
+            container.appendChild(toast);
+
+            // 3秒后自动移除
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                toast.style.transition = 'all 0.3s ease-in-out';
+                setTimeout(() => {
+                    container.removeChild(toast);
+                }, 300);
+            }, 3000);
         }
 
         // 文件选择事件
