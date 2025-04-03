@@ -11,6 +11,8 @@ test/
 *dict.yaml
 *output*
 rimetool/rimetool_gui/uploads/
+rimetool/rimetool_gui/outputs/
+
 
 # 环境
 .venv/
