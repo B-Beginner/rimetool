@@ -10,7 +10,7 @@ test/
 *dict.yaml.txt
 *dict.yaml
 *output*
-rimetool/rimetool_gui/uploads/
+
 
 # 环境
 .venv/
