@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RimeTool GUI</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .toast-container {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+        }
+        .toast {
+            margin-bottom: 0.5rem;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            min-width: 300px;
+            max-width: 500px;
+            animation: slideIn 0.3s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            word-wrap: break-word;
+        }
+        .toast-success {
+            background-color: #10B981;
+            color: white;
+        }
+        .toast-error {
+            background-color: #EF4444;
+            color: white;
+        }
+        .toast-info {
+            background-color: #3B82F6;
+            color: white;
+        }
+        .toast-warning {
+            background-color: #F59E0B;
+            color: white;
+        }
+        #debug-content {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-background text-foreground flex flex-col items-center justify-center p-4">
+    <h1 class="text-5xl font-bold text-primary mb-6">RimeTool GUI</h1>
+
+    <div id="error" class="error hidden text-destructive bg-red-100 border border-red-400 p-4 rounded mb-4"></div>
+    <!-- <div id="success" class="success hidden text-accent bg-yellow-100 border border-yellow-400 p-4 rounded mb-4">处理成功！</div>
+    <div id="loading" class="loading text-secondary hidden">处理中，请稍候...</div>  -->
+
+    <div id="toast-container" class="toast-container"></div>
+
+    <div id="debug-info" class="debug-info hidden bg-zinc-100 border border-zinc-300 p-4 rounded mb-4 rounded-lg shadow-lg ">
+        <h3 class="font-semibold">调试信息汇总：</h3>
+        <pre id="debug-content"></pre>
+    </div>
+
+    <!-- 文件输入部分 -->
+    <div class="bg-card p-6 rounded-lg shadow-lg form-container mb-4">
+        <h2 class="text-xl font-bold mb-4">非epub文件输入</h2>
+        <label for="file" class="block font-bold mb-2">选择文件：</label>
+        <label for="file" class="file-label">📂 选择文件 </label>
+        <input type="file" id="file" required class="border border-border rounded p-2 mb-4 w-full"  />
+        <input type="text" id="file-path" class="border border-border rounded p-2 mb-4 w-full" placeholder="未选择文件" readonly />
+
+        <label for="tool" class="block font-bold mb-2">选择工具：</label>
+        <select id="tool-file" required class="border border-border rounded p-2 mb-4 w-full">
+            <option value="selection">请选择工具</option>
+            <option value="vcf">VCF</option>
+            <!-- <option value="simple-english">Simple English</option> -->
+            <option value="se">Simple English (se)</option>
+            <!-- <option value="simple-chinese">Simple Chinese</option> -->
+            <option value="sc">Simple Chinese (sc)</option>
+            <option value="tosougou">To Sogou</option>
+        </select>
+
+        <button onclick="processFile('file')"
+            class="bg-primary text-primary-foreground  rounded p-2 w-full transition duration-300">处理文件</button>
+    </div>
+
+    <!-- EPUB 文件夹输入部分（选项 1 和 4） -->
+    <div class="bg-card p-6 rounded-lg shadow-lg form-container mb-4">
+        <h2 class="text-xl font-bold mb-4">EPUB 文件夹输入 - 转 txt 或 rime</h2>
+        <label for="folder-1-4" class="block font-bold mb-2">选择 EPUB 文件夹：</label>
+        <label for="folder-1-4" class="file-label">📂 选择文件夹 </label>
+        <input type="file" id="folder-1-4" required class="border border-border rounded p-2 mb-4 w-full" webkitdirectory directory accept=".epub" />
+        <input type="text" id="folder-path-1-4" class="border border-border rounded p-2 mb-4 w-full" placeholder="未选择文件夹" readonly />
+
+        <label for="output-folder-1-4" class="block font-bold mb-2">选择输出文件夹：（建议选择 outputs 根目录）</label>
+        <label for="output-folder-1-4" class="file-label">📂 选择文件夹 </label>
+        <input type="file" id="output-folder-1-4" required class="border border-border rounded p-2 mb-4 w-full" webkitdirectory directory />
+        <input type="text" id="output-folder-path-1-4" class="border border-border rounded p-2 mb-4 w-full" placeholder="未选择输出文件夹" readonly />
+
+        <label for="mode-1-4" class="block font-bold mb-2">模式选择：</label>
+        <select id="mode-1-4" class="border border-border rounded p-2 mb-4 w-full">
+            <option value="epub_to_txt">1. epub_to_txt - 将 EPUB 转换为纯文本</option>
+            <option value="epub_to_rime">4. epub_to_rime - 完整的 EPUB 到 rime 转换流程</option>
+        </select>
+
+
+
+        <button onclick="processFile('folder-1-4')"
+            class="bg-primary text-primary-foreground  rounded p-2 w-full transition duration-300">处理文件夹</button>
+    </div>
+
+
+    
+
+    <!-- EPUB 文件输入部分（选项 2 和 3） -->
+    <div class="bg-card p-6 rounded-lg shadow-lg form-container">
+        <h2 class="text-xl font-bold mb-4">EPUB 之 txt 转长短句，或 txt 转 rime</h2>
+        <label for="file-2-3" class="block font-bold mb-2">选择 txt 文件：</label>
+        <label for="file-2-3" class="file-label">📂 选择文件 </label>
+        <input type="file" id="file-2-3" required class="border border-border rounded p-2 mb-4 w-full"  />
+        <input type="text" id="file-path-2-3" class="border border-border rounded p-2 mb-4 w-full" placeholder="未选择文件" readonly />
+
+        <label for="output-folder-2-3" class="block font-bold mb-2">选择输出文件夹：（建议选择 outputs 根目录）</label>
+        <label for="output-folder-2-3" class="file-label">📂 选择文件夹 </label>
+        <input type="file" id="output-folder-2-3" required class="border border-border rounded p-2 mb-4 w-full" webkitdirectory directory />
+        <input type="text" id="output-folder-path-2-3" class="border border-border rounded p-2 mb-4 w-full" placeholder="未选择输出文件夹" readonly />
+
+        <label for="mode-2-3" class="block font-bold mb-2">模式选择：</label>
+        <select id="mode-2-3" class="border border-border rounded p-2 mb-4 w-full">
+            <option value="txt_to_short_long">2. txt_to_short_long - 将文本转换为短句和长句</option>
+            <option value="txt_to_rime">3. txt_to_rime - 将文本转换为 rime 格式</option>
+        </select>
+
+        <button onclick="processFile('file-2-3')"
+            class="bg-primary text-primary-foreground  rounded p-2 w-full transition duration-300">处理文件</button>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            console.log(`[${type.toUpperCase()}] ${message}`);
+            const debugContent = document.getElementById('debug-content');
+
+            // 创建toast元素
+            const toast = document.createElement('div');
+            const timestamp = new Date().toLocaleTimeString();
+            debugContent.textContent += `[${timestamp}] ${message}\n`;
+            document.getElementById('debug-info').style.display = 'block';
+
+            // 如果是成功处理文件的消息，使用success类型
+            if (message.includes('处理成功') && message.includes('outputs')) {
+                type = 'success';
+            }
+
+            toast.className = `toast toast-${type}`;
+            toast.innerHTML = `
+                <div class="flex items-center">
+                    <span class="font-bold mr-2">[${timestamp}]</span>
+                    <span>${message}</span>
+                </div>
+            `;
+
+            // 添加到容器
+            const container = document.getElementById('toast-container');
+            container.appendChild(toast);
+
+            // 3秒后自动移除
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                toast.style.transition = 'all 0.3s ease-in-out';
+                setTimeout(() => {
+                    container.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+
+        // 文件选择事件
+        document.getElementById('file').addEventListener('change', function () {
+            const filePathInput = document.getElementById('file-path');
+            if (this.files.length > 0) {
+                filePathInput.value = this.files[0].name;
+            } else {
+                filePathInput.value = '未选择文件';
+            }
+        });
+
+        // 文件夹选择事件（选项 1 和 4）
+        document.getElementById('folder-1-4').addEventListener('change', function () {
+            const folderPathInput = document.getElementById('folder-path-1-4');
+            if (this.files.length > 0) {
+                const firstFile = this.files[0];
+                const folderPath = firstFile.webkitRelativePath.split('/')[0];
+                folderPathInput.value = folderPath;
+            } else {
+                folderPathInput.value = '未选择文件夹';
+            }
+        });
+
+        // 输出文件夹选择事件（选项 1 和 4）
+        document.getElementById('output-folder-1-4').addEventListener('change', function () {
+            const outputFolderPathInput = document.getElementById('output-folder-path-1-4');
+            if (this.files.length > 0) {
+                const firstFile = this.files[0];
+                const folderPath = firstFile.webkitRelativePath.split('/')[0];
+                outputFolderPathInput.value = folderPath;
+            } else {
+                outputFolderPathInput.value = '未选择输出文件夹';
+            }
+        });
+
+        // 文件选择事件（选项 2 和 3）
+        document.getElementById('file-2-3').addEventListener('change', function () {
+            const filePathInput = document.getElementById('file-path-2-3');
+            if (this.files.length > 0) {
+                filePathInput.value = this.files[0].name;
+            } else {
+                filePathInput.value = '未选择文件';
+            }
+        });
+
+        // 输出文件夹选择事件（选项 2 和 3）
+        document.getElementById('output-folder-2-3').addEventListener('change', function () {
+            const outputFolderPathInput = document.getElementById('output-folder-path-2-3');
+            if (this.files.length > 0) {
+                const firstFile = this.files[0];
+                const folderPath = firstFile.webkitRelativePath.split('/')[0];
+                outputFolderPathInput.value = folderPath;
+            } else {
+                outputFolderPathInput.value = '未选择输出文件夹';
+            }
+        });
+
+        function processFile(type) {
+            log('开始处理');
+
+            let fileOrFolderInput, toolOrModeInput, pathInput, outputFolderInput, outputFolderPathInput;
+            let toolOrMode, outputFolderPath;
+
+            if (type === 'file') {
+                fileOrFolderInput = document.getElementById('file');
+                toolOrModeInput = document.getElementById('tool-file');
+                pathInput = document.getElementById('file-path');
+            } else if (type === 'folder-1-4') {
+                fileOrFolderInput = document.getElementById('folder-1-4');
+                toolOrModeInput = document.getElementById('mode-1-4');
+                pathInput = document.getElementById('folder-path-1-4');
+                outputFolderInput = document.getElementById('output-folder-1-4');
+                outputFolderPathInput = document.getElementById('output-folder-path-1-4');
+            } else if (type === 'file-2-3') {
+                fileOrFolderInput = document.getElementById('file-2-3');
+                toolOrModeInput = document.getElementById('mode-2-3');
+                pathInput = document.getElementById('file-path-2-3');
+                outputFolderInput = document.getElementById('output-folder-2-3');
+                outputFolderPathInput = document.getElementById('output-folder-path-2-3');
+            }
+
+            // const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            // const success = document.getElementById('success');
+
+            // 检查文件或文件夹
+            if ((type === 'file' && fileOrFolderInput.files.length === 0) ||
+                (type === 'folder-1-4' && fileOrFolderInput.files.length === 0) ||
+                (type === 'file-2-3' && fileOrFolderInput.files.length === 0)) {
+                const errorMsg = type === 'file' || type === 'file-2-3' ? '请选择文件' : '请选择文件夹';
+                log(errorMsg, 'error');
+                error.textContent = errorMsg;
+                error.style.display = 'block';
+                return;
+            }
+
+            // 检查输出文件夹
+            if ((type === 'folder-1-4' || type === 'file-2-3') && outputFolderInput.files.length === 0) {
+                const errorMsg = '请选择输出文件夹';
+                log(errorMsg, 'error');
+                error.textContent = errorMsg;
+                error.style.display = 'block';
+                return;
+            }
+
+            toolOrMode = toolOrModeInput.value;
+            if (type === 'folder-1-4' || type === 'file-2-3') {
+                outputFolderPath = outputFolderPathInput.value;
+            }
+
+            // 准备表单数据
+            const formData = new FormData();
+            if (type === 'file') {
+                formData.append('file', fileOrFolderInput.files[0]);
+                formData.append('tool', toolOrMode);
+            } else if (type === 'folder-1-4') {
+                for (let i = 0; i < fileOrFolderInput.files.length; i++) {
+                    formData.append('files[]', fileOrFolderInput.files[i]);
+                }
+                formData.append('mode', toolOrMode);
+                formData.append('output_folder', outputFolderPath);
+            } else if (type === 'file-2-3') {
+                formData.append('file', fileOrFolderInput.files[0]);
+                formData.append('mode', toolOrMode);
+                formData.append('output_folder', outputFolderPath);
+            }
+
+            log(`准备发送请求 - ${type}: ${pathInput.value}, ${type === 'file' ? '工具' : '模式'}: ${toolOrMode}`);
+            if (outputFolderPath) {
+                log(`输出文件夹: ${outputFolderPath}`);
+            }
+
+            // 更新 UI 状态
+            // loading.style.display = 'block';
+            error.style.display = 'none';
+            // success.style.display = 'none';
+
+            // 发送请求
+            fetch('http://127.0.0.1:5000/process', {
+                method: 'POST',
+                body: formData
+            })
+              .then(response => {
+                    log(`收到响应 - 状态: ${response.status}`);
+                    setTimeout(() => {
+                        log(`收到响应 - 状态: ${response.status}`);
+                    }, 60000);
+
+                    if (!response.ok) {
+                        return response.text().then(text => {
+                            throw new Error(text);
+                        });
+                    }
+                    // loading.style.display = 'none';
+                    error.style.display = 'none';
+                    // success.style.display = 'block';
+                    log('处理成功，处理好的文件位于 gui/outputs 文件夹中！');
+                    log('详细路径请查看后端信息');
+
+                    // return response.blob();
+                })
+              .catch(err => {
+                    const errorMsg = err.message || '未知错误';
+                    log(`发生错误: ${errorMsg}`, 'error');
+                    // loading.style.display = 'none';
+                    error.textContent = '错误：' + errorMsg;
+                    error.style.display = 'block';
+                });
+        }
+
+        // 页面加载完成时的初始化
+        window.onload = function () {
+            log('页面已加载完成');
+        };
+    </script>
+</body>
+
+</html>

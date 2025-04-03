@@ -1,0 +1,126 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+body {
+    /* 使用指定的蓝白渐变色背景 */
+    background: #1c92d2;
+    background: -webkit-linear-gradient(to right, #1c92d2, #f2fcfe);
+    background: linear-gradient(to right, #1c92d2, #f2fcfe);
+    font-family: 'Poppins', Arial, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+h1 {
+    color: #333;
+    font-size: 3rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.error {
+    color: red;
+    display: none;
+    background-color: rgba(255, 0, 0, 0.1);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.success {
+    color: green;
+    display: none;
+    background-color: rgba(0, 255, 0, 0.1);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.loading {
+    display: none;
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.debug-info {
+    margin-top: 1.25rem;
+    padding: 0.625rem;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 0.3125rem;
+    width: 80%;
+    max-width: 37.5rem;
+    display: none;
+}
+
+.form-container {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 1.25rem;
+    border-radius: 0.625rem;
+    box-shadow: 0 0 0.625rem rgba(0, 0, 0, 0.2);
+    width: 80%;
+    max-width: 37.5rem;
+    margin-top: 1.25rem;
+}
+
+label {
+    display: block;
+    margin-bottom: 0.3125rem;
+    font-weight: bold;
+}
+
+input,
+select {
+    width: 100%;
+    padding: 0.5rem;
+    margin-bottom: 0.9375rem;
+    border: 1px solid #ccc;
+    border-radius: 0.1875rem;
+    transition: border-color 0.3s ease;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.file-label {
+    display: inline-block;
+    background-color: #8accfe;
+    color: white;
+    padding: 0.625rem 1.25rem;
+    border-radius: 0.3125rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 0.9375rem;
+}
+
+.file-label i {
+    margin-right: 0.3125rem;
+}
+
+.file-label:hover {
+    background-color: #1c92d2;
+}
+
+button {
+    background-color: #8accfe;
+    color: white;
+    padding: 0.625rem 1.25rem;
+    border: none;
+    border-radius: 0.3125rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+}
+
+button:hover {
+    background-color: #1c92d2;
+}
+
+#file-path {
+    pointer-events: none;
+    background-color: #f0f0f0;
+}
