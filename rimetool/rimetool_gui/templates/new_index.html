@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RimeTool GUI</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="{{ url_for('serve_static', filename='style.css') }}">
     <style>
         .toast-container {
             position: fixed;
@@ -98,6 +98,7 @@
 
     <!-- EPUB 文件夹输入部分（选项 1 和 4） -->
     <div class="bg-card p-6 rounded-lg shadow-lg form-container mb-4">
+        <!-- TODO mac改成选择文件,注意 epub 就算变成文件夹， 也上传不了；正常文件夹，也选择不了 -->
         <h2 class="text-xl font-bold mb-4">EPUB 文件夹输入 - 转 txt 或 rime</h2>
         <label for="folder-1-4" class="block font-bold mb-2">选择 EPUB 文件夹：</label>
         <label for="folder-1-4" class="file-label">📂 选择文件夹 </label>
