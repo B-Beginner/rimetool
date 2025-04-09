@@ -60,7 +60,7 @@ def get_args_parser(add_help=True):
     parser.add_argument('--mode', '-m', required=False, choices=list(mode_choices.keys()))
     return parser
 
-def main(output_files=None):
+def main(output_files=None, is_web=False):
     current_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     parser = get_args_parser()
     args = parser.parse_args()
@@ -69,41 +69,46 @@ def main(output_files=None):
         os.makedirs(args.output_path)
     os.makedirs(args.output_path, exist_ok=True)
     if args.tool == 'vcf':
-        name = vcf.main(args.input_path, args.output_path)
+        name = vcf.main(args.input_path, args.output_path, is_web)
     elif args.tool in ['simple-english', 'se']:
-        name = simple_english.main(args.input_path, args.output_path)
+        name = simple_english.main(args.input_path, args.output_path, is_web)
     elif args.tool in ['simple-chinese', 'sc']:
-        name = simple_chinese.main(args.input_path, args.output_path)
+        name = simple_chinese.main(args.input_path, args.output_path, is_web)
     elif args.tool == 'tosougou':
-        name = tosougou.main(args.input_path, args.output_path)
+        name = tosougou.main(args.input_path, args.output_path, is_web)
     elif args.tool == 'epub':
         output_dir = args.output_path
-        # if not output_files:
-        #     print("i'm here")
         output_files = {
             'clean': os.path.join(output_dir, "epub转txt.txt"),
             'short': os.path.join(output_dir, "短句拆分.txt"),
             'long': os.path.join(output_dir, "长句拆分.txt")
         }
-        # print("🤔output_files:")
         print(output_files)
-        processor = Epub_Processor.EpubProcessor(args.input_path, output_dir, output_files,current_time)
+        processor = Epub_Processor.EpubProcessor(args.input_path, output_dir, output_files,current_time, is_web)
         
-        # print("🤔args.input_path:"+args.input_path)
         mode = mode_choices[args.mode]
         if mode == 'epub_to_txt':
-            processor.epub_to_txt()
+            output_file = processor.epub_to_txt()
+            if is_web:
+                return output_file
         elif mode == 'txt_to_short_long':
-            processor.txt_to_short_long(args.input_path, output_files)
+            output_files = processor.txt_to_short_long(args.input_path, output_files)
+            if is_web:
+                return output_files
         elif mode == 'txt_to_rime':
-            processor.txt_to_rime_all(args.input_path,output_files)
+            output_files = processor.txt_to_rime_all(args.input_path,output_files)
+            if is_web:
+                return output_files
         elif mode == 'epub_to_rime':
-            processor.epub_to_rime(output_files)
+            output_files = processor.epub_to_rime(output_files)
+            if is_web:
+                return output_files
         else:
             raise ValueError('请选择正确的EPUB处理模式')
     else:
         raise ValueError('请选择正确的工具。')
     return name
+
 def main_with_args(args_list):
     """
     用于在GUI中调用
@@ -122,15 +127,13 @@ def main_with_args(args_list):
                 'short': os.path.join(output_dir, "短句拆分.txt"),
                 'long': os.path.join(output_dir, "长句拆分.txt")
             }
-            # 这里可以根据需要将 output_files 以某种方式传递给后续处理逻辑
-            # 比如将其添加到 args 对象中
-            # setattr(args, 'output_files', output_files)
             sys.argv = [''] + args_list 
-            # + [f"--output-files={output_files}"]  # 这行可根据实际情况调整
-        name = main(output_files)
+        
+        # 标记这是从web界面调用的
+        result = main(output_files, is_web=True)
+        return result
     finally:
         sys.argv = original_argv  # 恢复原始的命令行参数
-    return name
 
 if __name__ == "__main__":
     main()

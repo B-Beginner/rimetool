@@ -3,7 +3,7 @@ import re
 import os
 from .common import detect_file_encoding
 
-def main(input_file, output_path):
+def main(input_file, output_path, is_web=False):
 	# 确保文件编码正确读入，并在输出时转为gbk
 	encoding = detect_file_encoding(input_file)
 
@@ -32,6 +32,12 @@ def main(input_file, output_path):
 			# new_line = str(line.strip() + '\t' + line_without_space + '\t'+str(1) +'\n' )
 			outfile.write(new_line_output)
 		print(f"已生成文件 {os.path.abspath(outfile.name)}")
+
+	# 返回文件名，用于web下载
+	filename = os.path.basename(output_file)
+	if is_web:
+		return output_file
+	return filename
 
 
 

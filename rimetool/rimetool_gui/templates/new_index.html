@@ -73,9 +73,20 @@
         <pre id="debug-content"></pre>
     </div>
 
+    <!-- 下载历史记录 -->
+    <div id="download-history" class="hidden bg-blue-50 border border-blue-300 p-4 rounded mb-4 rounded-lg shadow-lg">
+        <h3 class="font-semibold mb-2">下载记录：</h3>
+        <div id="history-list" class="space-y-2 max-h-60 overflow-y-auto">
+            <!-- 历史记录将在这里动态添加 -->
+        </div>
+        <p class="mt-3 text-sm text-gray-600">
+            提示: 下载文件默认保存在浏览器的默认下载文件夹中。您可以在浏览器设置中更改下载位置。
+        </p>
+    </div>
+
     <!-- 文件输入部分 -->
     <div class="bg-card p-6 rounded-lg shadow-lg form-container mb-4">
-        <h2 class="text-xl font-bold mb-4">非epub文件输入</h2>
+        <h2 class="text-xl font-bold mb-4">非 EPUB 文件输入</h2>
         <label for="file" class="block font-bold mb-2">选择文件：</label>
         <label for="file" class="file-label">📂 选择文件 </label>
         <input type="file" id="file" required class="border border-border rounded p-2 mb-4 w-full"  />
@@ -98,17 +109,16 @@
 
     <!-- EPUB 文件夹输入部分（选项 1 和 4） -->
     <div class="bg-card p-6 rounded-lg shadow-lg form-container mb-4">
-        <!-- TODO mac改成选择文件,注意 epub 就算变成文件夹， 也上传不了；正常文件夹，也选择不了 -->
-        <h2 class="text-xl font-bold mb-4">EPUB 文件夹输入 - 转 txt 或 rime</h2>
-        <label for="folder-1-4" class="block font-bold mb-2">选择 EPUB 文件夹：</label>
-        <label for="folder-1-4" class="file-label">📂 选择文件夹 </label>
-        <input type="file" id="folder-1-4" required class="border border-border rounded p-2 mb-4 w-full" webkitdirectory directory accept=".epub" />
-        <input type="text" id="folder-path-1-4" class="border border-border rounded p-2 mb-4 w-full" placeholder="未选择文件夹" readonly />
+        <h2 class="text-xl font-bold mb-4">EPUB ZIP 文件输入 - 转 txt 或 rime</h2>
+        <label for="folder-1-4" class="block font-bold mb-2">选择 EPUB 的 ZIP 格式文件（强烈建议 ZIP 中第一层就有 META-INF 文件夹）：</label>
+        <label for="folder-1-4" class="file-label">📂 选择文件 </label>
+        <input type="file" id="folder-1-4" required class="border border-border rounded p-2 mb-4 w-full" accept=".zip" />
+        <input type="text" id="folder-path-1-4" class="border border-border rounded p-2 mb-4 w-full" placeholder="未选择文件" readonly />
 
-        <label for="output-folder-1-4" class="block font-bold mb-2">选择输出文件夹：（建议选择 outputs 根目录）</label>
+        <label for="output-folder-1-4" class="block font-bold mb-2">选择输出文件夹：（本地运行可选，服务器运行将使用服务器默认路径）</label>
         <label for="output-folder-1-4" class="file-label">📂 选择文件夹 </label>
-        <input type="file" id="output-folder-1-4" required class="border border-border rounded p-2 mb-4 w-full" webkitdirectory directory />
-        <input type="text" id="output-folder-path-1-4" class="border border-border rounded p-2 mb-4 w-full" placeholder="未选择输出文件夹" readonly />
+        <input type="file" id="output-folder-1-4" class="border border-border rounded p-2 mb-4 w-full" webkitdirectory directory />
+        <input type="text" id="output-folder-path-1-4" class="border border-border rounded p-2 mb-4 w-full" placeholder="未选择输出文件夹（将使用默认路径）" readonly />
 
         <label for="mode-1-4" class="block font-bold mb-2">模式选择：</label>
         <select id="mode-1-4" class="border border-border rounded p-2 mb-4 w-full">
@@ -116,14 +126,9 @@
             <option value="epub_to_rime">4. epub_to_rime - 完整的 EPUB 到 rime 转换流程</option>
         </select>
 
-
-
         <button onclick="processFile('folder-1-4')"
-            class="bg-primary text-primary-foreground  rounded p-2 w-full transition duration-300">处理文件夹</button>
+            class="bg-primary text-primary-foreground  rounded p-2 w-full transition duration-300">处理文件</button>
     </div>
-
-
-    
 
     <!-- EPUB 文件输入部分（选项 2 和 3） -->
     <div class="bg-card p-6 rounded-lg shadow-lg form-container">
@@ -133,10 +138,10 @@
         <input type="file" id="file-2-3" required class="border border-border rounded p-2 mb-4 w-full"  />
         <input type="text" id="file-path-2-3" class="border border-border rounded p-2 mb-4 w-full" placeholder="未选择文件" readonly />
 
-        <label for="output-folder-2-3" class="block font-bold mb-2">选择输出文件夹：（建议选择 outputs 根目录）</label>
+        <label for="output-folder-2-3" class="block font-bold mb-2">选择输出文件夹：（可选，不选择将使用服务器默认路径）</label>
         <label for="output-folder-2-3" class="file-label">📂 选择文件夹 </label>
-        <input type="file" id="output-folder-2-3" required class="border border-border rounded p-2 mb-4 w-full" webkitdirectory directory />
-        <input type="text" id="output-folder-path-2-3" class="border border-border rounded p-2 mb-4 w-full" placeholder="未选择输出文件夹" readonly />
+        <input type="file" id="output-folder-2-3" class="border border-border rounded p-2 mb-4 w-full" webkitdirectory directory />
+        <input type="text" id="output-folder-path-2-3" class="border border-border rounded p-2 mb-4 w-full" placeholder="未选择输出文件夹（将使用默认路径）" readonly />
 
         <label for="mode-2-3" class="block font-bold mb-2">模式选择：</label>
         <select id="mode-2-3" class="border border-border rounded p-2 mb-4 w-full">
@@ -155,7 +160,15 @@
 
             // 创建toast元素
             const toast = document.createElement('div');
-            const timestamp = new Date().toLocaleTimeString();
+            // 完整的日期时间格式，如 "2025年4月8日 14:30:45"
+            const now = new Date();
+            const timestamp = now.getFullYear() + '年' + 
+                             (now.getMonth() + 1) + '月' + 
+                             now.getDate() + '日 ' + 
+                             now.getHours() + ':' + 
+                             String(now.getMinutes()).padStart(2, '0') + ':' + 
+                             String(now.getSeconds()).padStart(2, '0');
+            
             debugContent.textContent += `[${timestamp}] ${message}\n`;
             document.getElementById('debug-info').style.display = 'block';
 
@@ -187,6 +200,32 @@
             }, 3000);
         }
 
+        // 显示详细错误信息
+        function showDetailedError(error) {
+            log(`详细错误: ${JSON.stringify(error)}`, 'error');
+            
+            // 创建详细错误对话框
+            const errorDialog = document.createElement('div');
+            errorDialog.className = 'fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50';
+            errorDialog.innerHTML = `
+                <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+                    <h3 class="text-xl font-bold mb-4 text-red-600">错误详情</h3>
+                    <div class="mb-4 overflow-auto max-h-96 bg-gray-100 p-4 rounded">
+                        <pre class="whitespace-pre-wrap">${JSON.stringify(error, null, 2)}</pre>
+                    </div>
+                    <div class="flex justify-end">
+                        <button id="close-error" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">关闭</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(errorDialog);
+            
+            document.getElementById('close-error').addEventListener('click', function() {
+                document.body.removeChild(errorDialog);
+            });
+        }
+
         // 文件选择事件
         document.getElementById('file').addEventListener('change', function () {
             const filePathInput = document.getElementById('file-path');
@@ -197,15 +236,21 @@
             }
         });
 
-        // 文件夹选择事件（选项 1 和 4）
+        // ZIP 文件选择事件（选项 1 和 4）
         document.getElementById('folder-1-4').addEventListener('change', function () {
-            const folderPathInput = document.getElementById('folder-path-1-4');
+            const filePathInput = document.getElementById('folder-path-1-4');
             if (this.files.length > 0) {
-                const firstFile = this.files[0];
-                const folderPath = firstFile.webkitRelativePath.split('/')[0];
-                folderPathInput.value = folderPath;
+                const fileName = this.files[0].name;
+                if (fileName.toLowerCase().endsWith('.zip')) {
+                    filePathInput.value = fileName;
+                    log(`已选择 ZIP 文件: ${fileName}`, 'info');
+                } else {
+                    filePathInput.value = '请选择 ZIP 文件';
+                    log('请选择 ZIP 文件', 'error');
+                    this.value = ''; // 清空选择
+                }
             } else {
-                folderPathInput.value = '未选择文件夹';
+                filePathInput.value = '未选择文件';
             }
         });
 
@@ -217,7 +262,7 @@
                 const folderPath = firstFile.webkitRelativePath.split('/')[0];
                 outputFolderPathInput.value = folderPath;
             } else {
-                outputFolderPathInput.value = '未选择输出文件夹';
+                outputFolderPathInput.value = '未选择输出文件夹（将使用默认路径）';
             }
         });
 
@@ -239,7 +284,7 @@
                 const folderPath = firstFile.webkitRelativePath.split('/')[0];
                 outputFolderPathInput.value = folderPath;
             } else {
-                outputFolderPathInput.value = '未选择输出文件夹';
+                outputFolderPathInput.value = '未选择输出文件夹（将使用默认路径）';
             }
         });
 
@@ -284,33 +329,56 @@
 
             // 检查输出文件夹
             if ((type === 'folder-1-4' || type === 'file-2-3') && outputFolderInput.files.length === 0) {
-                const errorMsg = '请选择输出文件夹';
-                log(errorMsg, 'error');
-                error.textContent = errorMsg;
-                error.style.display = 'block';
-                return;
+                // 不选择输出文件夹时，使用默认路径
+                log('未选择输出文件夹，使用默认路径', 'info');
+                outputFolderPath = 'default_output';
+            } else if (type === 'folder-1-4' || type === 'file-2-3') {
+                outputFolderPath = outputFolderPathInput.value;
             }
 
             toolOrMode = toolOrModeInput.value;
-            if (type === 'folder-1-4' || type === 'file-2-3') {
-                outputFolderPath = outputFolderPathInput.value;
-            }
 
             // 准备表单数据
             const formData = new FormData();
             if (type === 'file') {
-                formData.append('file', fileOrFolderInput.files[0]);
-                formData.append('tool', toolOrMode);
+                // 单个非EPUB文件处理
+                formData.append('file', fileOrFolderInput.files[0]); // 文件对象
+                formData.append('tool', toolOrMode); // 工具类型 (vcf, se, sc, tosougou)
             } else if (type === 'folder-1-4') {
-                for (let i = 0; i < fileOrFolderInput.files.length; i++) {
-                    formData.append('files[]', fileOrFolderInput.files[i]);
+                // ZIP文件处理（EPUB）
+                formData.append('zip_file', fileOrFolderInput.files[0]); // ZIP文件对象
+                formData.append('is_zip_file', 'true'); // 标记为ZIP文件
+                formData.append('mode', toolOrMode); // 模式 (epub_to_txt, epub_to_rime)
+                
+                // 如果指定了输出文件夹
+                if (outputFolderPath && outputFolderPath !== 'default_output') {
+                    formData.append('output_folder', outputFolderPath); // 输出文件夹路径
                 }
-                formData.append('mode', toolOrMode);
-                formData.append('output_folder', outputFolderPath);
             } else if (type === 'file-2-3') {
-                formData.append('file', fileOrFolderInput.files[0]);
-                formData.append('mode', toolOrMode);
-                formData.append('output_folder', outputFolderPath);
+                // 文本文件处理
+                formData.append('file', fileOrFolderInput.files[0]); // 文件对象
+                formData.append('mode', toolOrMode); // 模式 (txt_to_short_long, txt_to_rime)
+                formData.append('tool', 'epub'); // 
+                
+                // 如果指定了输出文件夹
+                if (outputFolderPath && outputFolderPath !== 'default_output') {
+                    formData.append('output_folder', outputFolderPath); // 输出文件夹路径
+                }
+            }
+            
+            // 添加调试信息
+            log(`准备发送请求 - 参数:`, 'info');
+            for (let pair of formData.entries()) {
+                if (!pair[0].includes('file') && !pair[0].includes('zip_file')) { // 不显示文件内容
+                    log(`${pair[0]}: ${pair[1]}`, 'info');
+                } else {
+                    const fileObj = pair[1];
+                    if (fileObj instanceof File) {
+                        log(`${pair[0]}: 文件 "${fileObj.name}", 大小: ${(fileObj.size / 1024).toFixed(2)} KB`, 'info');
+                    } else {
+                        log(`${pair[0]}: [数据]`, 'info');
+                    }
+                }
             }
 
             log(`准备发送请求 - ${type}: ${pathInput.value}, ${type === 'file' ? '工具' : '模式'}: ${toolOrMode}`);
@@ -323,43 +391,322 @@
             error.style.display = 'none';
             // success.style.display = 'none';
 
-            // 发送请求
-            fetch('http://127.0.0.1:5000/process', {
-                method: 'POST',
-                body: formData
+            // 设置请求超时错误处理
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 600000); // 10分钟超时，处理大文件
+            
+            // 先测试服务器是否可用
+            fetch('http://127.0.0.1:5001/', { 
+                method: 'GET',
+                // signal: AbortSignal.timeout(5001), // 5秒超时
+                mode: 'cors'
             })
-              .then(response => {
-                    log(`收到响应 - 状态: ${response.status}`);
-                    setTimeout(() => {
-                        log(`收到响应 - 状态: ${response.status}`);
-                    }, 60000);
-
+            .then(response => {
+                if (response.ok) {
+                    log('服务器连接正常，开始上传文件...', 'info');
+                    sendMainRequest();
+                } else {
+                    throw new Error('服务器状态异常');
+                }
+            })
+            .catch(err => {
+                log('服务器连接测试失败，尝试继续上传...', 'warning');
+                log(`连接测试错误: ${err.message}`, 'warning');
+                // 即使连接测试失败，仍然尝试主请求
+                sendMainRequest();
+            });
+            
+            // 主请求函数
+            function sendMainRequest() {
+                // 发送请求
+                fetch('http://127.0.0.1:5001/process', {
+                    method: 'POST',
+                    body: formData,
+                    signal: controller.signal,
+                    headers: {
+                        'Accept': 'application/json',
+                    },
+                    mode: 'cors',
+                    credentials: 'same-origin'
+                })
+                .then(response => {
+                    clearTimeout(timeoutId); // 清除超时
+                    
                     if (!response.ok) {
                         return response.text().then(text => {
                             throw new Error(text);
                         });
                     }
-                    // loading.style.display = 'none';
-                    error.style.display = 'none';
-                    // success.style.display = 'block';
-                    log('处理成功，处理好的文件位于 gui/outputs 文件夹中！');
-                    log('详细路径请查看后端信息');
-
-                    // return response.blob();
+                    return response;
                 })
-              .catch(err => {
-                    const errorMsg = err.message || '未知错误';
+                .then(response => {
+                    log(`收到响应 - 状态: ${response.status}`);
+                    
+                    // 检查响应的Content-Type
+                    const contentType = response.headers.get('Content-Type');
+                    log(`响应内容类型: ${contentType}`);
+                    
+                    // 如果是下载文件的响应
+                    if (contentType && (contentType.includes('application/octet-stream') || 
+                                       contentType.includes('application/zip'))) {
+                        log('检测到文件下载，开始下载...');
+                        return response.blob().then(blob => {
+                            // 创建一个临时的<a>元素用于下载
+                            const url = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.style.display = 'none';
+                            a.href = url;
+                            
+                            // 从Content-Disposition头中提取文件名
+                            const contentDisposition = response.headers.get('Content-Disposition');
+                            let filename = 'download';
+                            if (contentDisposition) {
+                                const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                                const matches = filenameRegex.exec(contentDisposition);
+                                if (matches != null && matches[1]) {
+                                    filename = matches[1].replace(/['"]/g, '');
+                                }
+                            }
+                            
+                            a.download = filename;
+                            
+                            // 显示下载提示
+                            showDownloadHelp(filename);
+                            
+                            document.body.appendChild(a);
+                            a.click();
+                            window.URL.revokeObjectURL(url);
+                            log(`文件 "${filename}" 下载中...`, 'success');
+                            
+                            // 保存下载信息到本地存储
+                            saveLastDownload(filename);
+                            
+                            return Promise.resolve();
+                        });
+                    } else {
+                        // 不是下载文件的响应
+                        log('处理成功，但未收到文件下载响应');
+                        return Promise.resolve();
+                    }
+                })
+                .then(() => {
+                    error.style.display = 'none';
+                    log('处理成功，处理好的文件位于 gui/outputs 文件夹中！');
+                    log('如果没有自动下载，请查看后端日志获取详细信息');
+                })
+                .catch(err => {
+                    clearTimeout(timeoutId); // 清除超时
+                    
+                    let errorMsg = err.message || '未知错误';
+                    
+                    // 处理特定类型的错误
+                    if (err.name === 'AbortError') {
+                        errorMsg = '请求超时（10分钟），服务器处理时间过长';
+                    } else if (err instanceof TypeError && err.message.includes('Failed to fetch')) {
+                        errorMsg = '无法连接到服务器(http://127.0.0.1:5001)，请检查服务器是否运行';
+                        // 尝试提供更多调试信息
+                        log('尝试连接服务器失败，请确保：', 'error');
+                        log('1. Python服务器正在运行 (python new_app.py)', 'error');
+                        log('2. 服务器正在监听5001端口', 'error');
+                        log('3. 没有防火墙阻止连接', 'error');
+                        log('4. 浏览器允许跨域请求', 'error');
+                    }
+                    
                     log(`发生错误: ${errorMsg}`, 'error');
-                    // loading.style.display = 'none';
                     error.textContent = '错误：' + errorMsg;
                     error.style.display = 'block';
+                    
+                    // 添加详情按钮
+                    const detailButton = document.createElement('button');
+                    detailButton.textContent = '查看详情';
+                    detailButton.className = 'bg-yellow-500 text-white px-4 py-2 rounded mt-2 mr-2';
+                    detailButton.onclick = function() {
+                        showDetailedError({
+                            message: err.message,
+                            name: err.name,
+                            stack: err.stack,
+                            type: type,
+                            formData: Array.from(formData.entries())
+                                .filter(pair => !pair[0].includes('file') && !pair[0].includes('zip_file'))
+                                .reduce((obj, [key, value]) => {
+                                    obj[key] = value;
+                                    return obj;
+                                }, {}),
+                            server: {
+                                url: 'http://127.0.0.1:5001',
+                                endpoint: '/process',
+                                method: 'POST'
+                            }
+                        });
+                    };
+                    error.appendChild(detailButton);
+                    
+                    // 添加重试按钮
+                    const retryButton = document.createElement('button');
+                    retryButton.textContent = '重试';
+                    retryButton.className = 'bg-blue-500 text-white px-4 py-2 rounded mt-2';
+                    retryButton.onclick = function() {
+                        processFile(type);
+                    };
+                    error.appendChild(retryButton);
                 });
+            }
         }
 
         // 页面加载完成时的初始化
         window.onload = function () {
             log('页面已加载完成');
+            
+            // 显示上次下载的信息
+            try {
+                const lastDownloadStr = localStorage.getItem('lastDownload');
+                if (lastDownloadStr) {
+                    const lastDownload = JSON.parse(lastDownloadStr);
+                    const now = new Date();
+                    const timeDiff = (now.getTime() - lastDownload.timestamp) / (1000 * 60 * 60); // 小时
+                    if (timeDiff < 24) { // 如果是24小时内的下载
+                        // 确保时间格式是年月日格式
+                        let displayTime = lastDownload.time;
+                        if (!displayTime || displayTime.indexOf('年') === -1) {
+                            const downloadDate = new Date(lastDownload.timestamp);
+                            displayTime = downloadDate.getFullYear() + '年' + 
+                                        (downloadDate.getMonth() + 1) + '月' + 
+                                        downloadDate.getDate() + '日 ' + 
+                                        downloadDate.getHours() + ':' + 
+                                        String(downloadDate.getMinutes()).padStart(2, '0') + ':' + 
+                                        String(downloadDate.getSeconds()).padStart(2, '0');
+                        }
+                        log(`上次下载: "${lastDownload.filename}" (${displayTime})`, 'info');
+                    }
+                }
+                
+                // 加载并显示下载历史
+                updateDownloadHistory();
+            } catch (e) {
+                console.error('读取下载历史失败:', e);
+            }
         };
+        
+        // 保存上次下载的信息
+        function saveLastDownload(filename) {
+            try {
+                const now = new Date();
+                const formattedTime = now.getFullYear() + '年' + 
+                                     (now.getMonth() + 1) + '月' + 
+                                     now.getDate() + '日 ' + 
+                                     now.getHours() + ':' + 
+                                     String(now.getMinutes()).padStart(2, '0') + ':' + 
+                                     String(now.getSeconds()).padStart(2, '0');
+                
+                const downloadItem = {
+                    filename: filename,
+                    time: formattedTime,
+                    timestamp: now.getTime()
+                };
+                
+                // 保存最新的下载
+                localStorage.setItem('lastDownload', JSON.stringify(downloadItem));
+                
+                // 获取历史记录
+                let history = [];
+                const historyStr = localStorage.getItem('downloadHistory');
+                if (historyStr) {
+                    history = JSON.parse(historyStr);
+                }
+                
+                // 添加新记录到前面
+                history.unshift(downloadItem);
+                
+                // 保留最新的10条记录
+                if (history.length > 10) {
+                    history = history.slice(0, 10);
+                }
+                
+                // 保存历史记录
+                localStorage.setItem('downloadHistory', JSON.stringify(history));
+                
+                // 更新显示
+                updateDownloadHistory();
+            } catch (e) {
+                console.error('保存下载信息失败:', e);
+            }
+        }
+        
+        // 更新下载历史记录显示
+        function updateDownloadHistory() {
+            try {
+                const historyStr = localStorage.getItem('downloadHistory');
+                if (!historyStr) return;
+                
+                const history = JSON.parse(historyStr);
+                if (history.length === 0) return;
+                
+                // 显示下载历史区域
+                const downloadHistoryElem = document.getElementById('download-history');
+                downloadHistoryElem.classList.remove('hidden');
+                
+                // 更新历史列表
+                const historyListElem = document.getElementById('history-list');
+                historyListElem.innerHTML = '';
+                
+                history.forEach(item => {
+                    // 如果时间格式是时间戳，转换为格式化的日期时间
+                    let displayTime = item.time;
+                    if (!displayTime || displayTime.indexOf('年') === -1) {
+                        const itemDate = new Date(item.timestamp);
+                        displayTime = itemDate.getFullYear() + '年' + 
+                                     (itemDate.getMonth() + 1) + '月' + 
+                                     itemDate.getDate() + '日 ' + 
+                                     itemDate.getHours() + ':' + 
+                                     String(itemDate.getMinutes()).padStart(2, '0') + ':' + 
+                                     String(itemDate.getSeconds()).padStart(2, '0');
+                    }
+
+                    const itemElem = document.createElement('div');
+                    itemElem.className = 'border-b border-blue-200 pb-2';
+                    itemElem.innerHTML = `
+                        <div class="flex justify-between" style="margin: 0 10px;">
+                            <span class="font-medium"  style="margin: 0 10px;">${item.filename}</span>
+                            <span class="text-sm text-gray-500"  style="margin: 0 10px;">${displayTime}</span>
+                        </div>
+                    `;
+                    historyListElem.appendChild(itemElem);
+                });
+            } catch (e) {
+                console.error('更新下载历史失败:', e);
+            }
+        }
+        
+        // 显示下载帮助信息
+        function showDownloadHelp(filename) {
+            // 创建下载帮助对话框
+            const helpDialog = document.createElement('div');
+            helpDialog.className = 'fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50';
+            helpDialog.innerHTML = `
+                <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+                    <h3 class="text-xl font-bold mb-4">文件下载中</h3>
+                    <p class="mb-4">文件 <strong>${filename}</strong> 正在下载。</p>
+                    <p class="mb-4">由于浏览器安全限制，我们无法指定文件下载位置。请检查您的默认下载文件夹或浏览器下载栏。</p>
+                    <p class="mb-6">提示：您可以在浏览器设置中修改默认下载位置。</p>
+                    <div class="flex justify-end">
+                        <button id="close-help" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">我知道了</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(helpDialog);
+            
+            document.getElementById('close-help').addEventListener('click', function() {
+                document.body.removeChild(helpDialog);
+            });
+            
+            // 5秒后自动关闭
+            setTimeout(() => {
+                if (document.body.contains(helpDialog)) {
+                    document.body.removeChild(helpDialog);
+                }
+            }, 5000);
+        }
     </script>
 </body>
 
