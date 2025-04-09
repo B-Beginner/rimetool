@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, make_response
+from flask import Flask, request, render_template, make_response, send_from_directory
 import os
 import logging
 import traceback
@@ -7,7 +7,7 @@ from flask_cors import CORS  # 导入 CORS
 """
 使用方法：运行本文件，然后打开new_index.html，右键点击 Open in Browser 预览选项
 """
-app = Flask(__name__)
+app = Flask(__name__, static_folder='templates')
 # 启用 CORS
 # CORS(app, origins="http://127.0.0.1:5500")  # 允许来自 http://127.0.0.1:5500 的请求
 CORS(app, origins="*") 
@@ -72,8 +72,11 @@ def process_file():
                 return make_response('请选择文件', 400)
             files = [file]
             
-            # 上传文件的路径, 对单个文件而言是文件本身的路径
+            # 保存文件到uploads文件夹
             input_path = os.path.join(UPLOAD_FOLDER, file.filename)
+            file.save(input_path)
+            logger.info(f"文件已保存到: {input_path}")
+            
             output_path = os.path.join(OUTPUT_FOLDER, tool+"_output")
         elif 'files[]' in request.files: # epub的文件夹
             files = request.files.getlist('files[]')
@@ -82,11 +85,16 @@ def process_file():
                 logger.warning("请求中没有文件")
                 return make_response('请选择文件', 400)
             
-            # 上传文件的路径，对epub而言，是.epub文件夹的路径
+            # 创建epub文件夹并保存所有文件
             input_path = os.path.join(UPLOAD_FOLDER, files[0].filename.split("/")[0])
+            os.makedirs(input_path, exist_ok=True)
+            
+            for file in files:
+                file_path = os.path.join(input_path, file.filename.split("/")[-1])
+                file.save(file_path)
+                logger.info(f"文件已保存到: {file_path}")
+            
             output_path = os.path.join(OUTPUT_FOLDER, tool+"_output")
-            # logger.info(f"🤔request.files: {request.files}")
-            # output_folder = request.form.get('output_folder') # todo
         else:
             logger.warning("请求中没有文件")
             return make_response('请选择文件', 400)
@@ -136,6 +144,10 @@ def process_file():
         #         logger.info(f"清理输出文件: {output_path}")
         # except Exception as e:
         #     logger.error(f"清理临时文件失败: {str(e)}\n{traceback.format_exc()}")
+
+@app.route('/static/<path:filename>')
+def serve_static(filename):
+    return send_from_directory('templates', filename)
 
 if __name__ == '__main__':
     logger.info("启动Flask应用")
