@@ -264,3 +264,74 @@ Traceback (most recent call last):
 TypeError: expected str, bytes or os.PathLike object, not NoneType
 
 2025-04-11 16:43:54,861 - INFO - [_internal.py:97] - 127.0.0.1 - - [11/Apr/2025 16:43:54] "[35m[1mPOST /process HTTP/1.1[0m" 500 -
+2025-04-11 17:05:48,678 - INFO - [new_app.py:34] - Python版本: 3.9.22 (main, Apr  8 2025, 15:21:55) 
+[Clang 16.0.0 (clang-1600.0.26.6)]
+2025-04-11 17:05:48,678 - INFO - [new_app.py:35] - 操作系统: posix, darwin
+2025-04-11 17:05:48,678 - INFO - [new_app.py:36] - 当前工作目录: /Users/ww/coding/rimetool_new
+2025-04-11 17:05:48,678 - INFO - [new_app.py:43] - 已添加到sys.path: /Users/ww/coding/rimetool_new/rimetool
+2025-04-11 17:05:48,678 - INFO - [new_app.py:48] - 成功导入 rimetool_main
+2025-04-11 17:05:48,678 - INFO - [new_app.py:67] - 创建上传目录: /Users/ww/coding/rimetool_new/rimetool/rimetool_gui/uploads
+2025-04-11 17:05:48,678 - INFO - [new_app.py:69] - 创建输出目录: /Users/ww/coding/rimetool_new/rimetool/rimetool_gui/outputs
+2025-04-11 17:05:48,679 - INFO - [new_app.py:351] - 启动Flask应用
+2025-04-11 17:05:53,690 - INFO - [new_app.py:74] - 访问首页
+2025-04-11 17:05:53,692 - INFO - [_internal.py:97] - 127.0.0.1 - - [11/Apr/2025 17:05:53] "GET / HTTP/1.1" 200 -
+2025-04-11 17:05:53,748 - INFO - [_internal.py:97] - 127.0.0.1 - - [11/Apr/2025 17:05:53] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-04-11 17:06:02,754 - INFO - [new_app.py:34] - Python版本: 3.9.22 (main, Apr  8 2025, 15:21:55) 
+[Clang 16.0.0 (clang-1600.0.26.6)]
+2025-04-11 17:06:02,754 - INFO - [new_app.py:35] - 操作系统: posix, darwin
+2025-04-11 17:06:02,754 - INFO - [new_app.py:36] - 当前工作目录: /Users/ww/coding/rimetool_new
+2025-04-11 17:06:02,754 - INFO - [new_app.py:43] - 已添加到sys.path: /Users/ww/coding/rimetool_new/rimetool
+2025-04-11 17:06:02,754 - INFO - [new_app.py:48] - 成功导入 rimetool_main
+2025-04-11 17:06:02,754 - INFO - [new_app.py:67] - 创建上传目录: /Users/ww/coding/rimetool_new/rimetool/rimetool_gui/uploads
+2025-04-11 17:06:02,754 - INFO - [new_app.py:69] - 创建输出目录: /Users/ww/coding/rimetool_new/rimetool/rimetool_gui/outputs
+2025-04-11 17:06:02,755 - INFO - [new_app.py:351] - 启动Flask应用
+2025-04-11 17:06:02,763 - INFO - [_internal.py:97] - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.10.103:5001
+2025-04-11 17:06:02,764 - INFO - [_internal.py:97] - [33mPress CTRL+C to quit[0m
+2025-04-11 17:06:06,099 - INFO - [new_app.py:75] - 访问首页
+2025-04-11 17:06:06,111 - INFO - [_internal.py:97] - 127.0.0.1 - - [11/Apr/2025 17:06:06] "GET / HTTP/1.1" 200 -
+2025-04-11 17:06:06,217 - INFO - [_internal.py:97] - 127.0.0.1 - - [11/Apr/2025 17:06:06] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-04-11 17:06:14,261 - INFO - [_internal.py:97] - 127.0.0.1 - - [11/Apr/2025 17:06:14] "GET /get_beian_text HTTP/1.1" 200 -
+2025-04-11 17:07:29,615 - INFO - [new_app.py:75] - 访问首页
+2025-04-11 17:07:29,617 - INFO - [_internal.py:97] - 127.0.0.1 - - [11/Apr/2025 17:07:29] "GET / HTTP/1.1" 200 -
+2025-04-11 17:07:29,664 - INFO - [_internal.py:97] - 127.0.0.1 - - [11/Apr/2025 17:07:29] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-04-11 17:07:37,718 - INFO - [_internal.py:97] - 127.0.0.1 - - [11/Apr/2025 17:07:37] "GET /get_beian_text HTTP/1.1" 200 -
+2025-04-11 17:07:42,971 - INFO - [new_app.py:34] - Python版本: 3.9.22 (main, Apr  8 2025, 15:21:55) 
+[Clang 16.0.0 (clang-1600.0.26.6)]
+2025-04-11 17:07:42,971 - INFO - [new_app.py:35] - 操作系统: posix, darwin
+2025-04-11 17:07:42,971 - INFO - [new_app.py:36] - 当前工作目录: /Users/ww/coding/rimetool_new
+2025-04-11 17:07:42,971 - INFO - [new_app.py:43] - 已添加到sys.path: /Users/ww/coding/rimetool_new/rimetool
+2025-04-11 17:07:42,972 - INFO - [new_app.py:48] - 成功导入 rimetool_main
+2025-04-11 17:07:42,972 - INFO - [new_app.py:67] - 创建上传目录: /Users/ww/coding/rimetool_new/rimetool/rimetool_gui/uploads
+2025-04-11 17:07:42,972 - INFO - [new_app.py:69] - 创建输出目录: /Users/ww/coding/rimetool_new/rimetool/rimetool_gui/outputs
+2025-04-11 17:07:42,972 - INFO - [new_app.py:351] - 启动Flask应用
+2025-04-11 17:07:42,980 - INFO - [_internal.py:97] - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.10.103:5001
+2025-04-11 17:07:42,980 - INFO - [_internal.py:97] - [33mPress CTRL+C to quit[0m
+2025-04-11 17:07:46,007 - INFO - [new_app.py:75] - 访问首页
+2025-04-11 17:07:46,012 - INFO - [_internal.py:97] - 127.0.0.1 - - [11/Apr/2025 17:07:46] "GET / HTTP/1.1" 200 -
+2025-04-11 17:07:46,076 - INFO - [_internal.py:97] - 127.0.0.1 - - [11/Apr/2025 17:07:46] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-04-11 17:07:54,591 - INFO - [_internal.py:97] - 127.0.0.1 - - [11/Apr/2025 17:07:54] "GET /get_beian_text HTTP/1.1" 200 -
+2025-04-11 17:13:16,724 - INFO - [new_app.py:34] - Python版本: 3.9.22 (main, Apr  8 2025, 15:21:55) 
+[Clang 16.0.0 (clang-1600.0.26.6)]
+2025-04-11 17:13:16,724 - INFO - [new_app.py:35] - 操作系统: posix, darwin
+2025-04-11 17:13:16,724 - INFO - [new_app.py:36] - 当前工作目录: /Users/ww/coding/rimetool_new
+2025-04-11 17:13:16,725 - INFO - [new_app.py:43] - 已添加到sys.path: /Users/ww/coding/rimetool_new/rimetool
+2025-04-11 17:13:16,725 - INFO - [new_app.py:48] - 成功导入 rimetool_main
+2025-04-11 17:13:16,725 - INFO - [new_app.py:67] - 创建上传目录: /Users/ww/coding/rimetool_new/rimetool/rimetool_gui/uploads
+2025-04-11 17:13:16,725 - INFO - [new_app.py:69] - 创建输出目录: /Users/ww/coding/rimetool_new/rimetool/rimetool_gui/outputs
+2025-04-11 17:13:16,725 - INFO - [new_app.py:359] - 启动Flask应用
+2025-04-11 17:13:16,733 - INFO - [_internal.py:97] - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5001
+ * Running on http://192.168.10.103:5001
+2025-04-11 17:13:16,733 - INFO - [_internal.py:97] - [33mPress CTRL+C to quit[0m
+2025-04-11 17:13:21,531 - INFO - [new_app.py:75] - 访问首页
+2025-04-11 17:13:21,572 - INFO - [_internal.py:97] - 127.0.0.1 - - [11/Apr/2025 17:13:21] "GET / HTTP/1.1" 200 -
+2025-04-11 17:13:21,617 - INFO - [_internal.py:97] - 127.0.0.1 - - [11/Apr/2025 17:13:21] "[36mGET /static/style.css HTTP/1.1[0m" 304 -
+2025-04-11 17:13:31,720 - INFO - [_internal.py:97] - 127.0.0.1 - - [11/Apr/2025 17:13:31] "GET /get_beian_text HTTP/1.1" 200 -
+2025-04-11 17:13:31,729 - INFO - [_internal.py:97] - 127.0.0.1 - - [11/Apr/2025 17:13:31] "GET /get_website_config HTTP/1.1" 200 -
