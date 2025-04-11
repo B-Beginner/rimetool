@@ -3,6 +3,7 @@ rimetool.egg-info/
 build/
 dist/
 __pycache__/
+# docker构建
 
 
 # 测试文件
