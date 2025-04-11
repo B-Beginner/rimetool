@@ -3,7 +3,7 @@ version: "3"
 services:
   rimetool:
     container_name: rimetool  # 设置docker容器名称为rimetool
-    image: whitewatercn/rimetool:main
+    image: whitewatercn/rimetool:latest
     ports:
       - "5003:5001"  # 映射容器的5003端口到主机的5001端口
     command: "sh -c \"echo 'rimetool部署成功: http://localhost:5003'\""
