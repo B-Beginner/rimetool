@@ -5,7 +5,7 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RimeTool GUI</title>
+    <title id="website-title"></title>
     <link rel="stylesheet" href="{{ url_for('serve_static', filename='style.css') }}">
     <style>
         .toast-container {
@@ -60,7 +60,7 @@
 </head>
 
 <body class="bg-background text-foreground flex flex-col items-center justify-center p-4">
-    <h1 class="text-5xl font-bold text-primary mb-6">RimeTool GUI</h1>
+    <h1 id="website-name" class="text-5xl font-bold text-primary mb-6"></h1>
 
     <div id="error" class="error hidden text-destructive bg-red-100 border border-red-400 p-4 rounded mb-4"></div>
     <!-- <div id="success" class="success hidden text-accent bg-yellow-100 border border-yellow-400 p-4 rounded mb-4">处理成功！</div>
@@ -616,7 +616,7 @@
                                         downloadDate.getDate() + '日 ' + 
                                         downloadDate.getHours() + ':' + 
                                         String(downloadDate.getMinutes()).padStart(2, '0') + ':' + 
-                                        String(downloadDate.getSeconds()).padStart(2, '0');
+                                        downloadDate.getSeconds();
                         }
                         log(`上次下载: "${lastDownload.filename}" (${displayTime})`, 'info');
                     }
@@ -638,7 +638,7 @@
                                      now.getDate() + '日 ' + 
                                      now.getHours() + ':' + 
                                      String(now.getMinutes()).padStart(2, '0') + ':' + 
-                                     String(now.getSeconds()).padStart(2, '0');
+                                     now.getSeconds();
                 
                 const downloadItem = {
                     filename: filename,
@@ -701,7 +701,7 @@
                                      itemDate.getDate() + '日 ' + 
                                      itemDate.getHours() + ':' + 
                                      String(itemDate.getMinutes()).padStart(2, '0') + ':' + 
-                                     String(itemDate.getSeconds()).padStart(2, '0');
+                                     itemDate.getSeconds();
                     }
 
                     const itemElem = document.createElement('div');
@@ -750,6 +750,33 @@
             }, 5000);
         }
     </script>
-</body>
 
+    <footer class="mt-6 text-center">
+        <a id="beian-link" href="https://beian.miit.gov.cn/" target="_blank" class="text-blue-500 hover:underline"></a>
+    </footer>
+
+    <script>
+        // Fetch the text for the link from the server
+        fetch('/get_beian_text')
+            .then(response => response.json())
+            .then(data => {
+                const beianLink = document.getElementById('beian-link');
+                beianLink.textContent = data.text || '备案信息';
+            })
+            .catch(error => {
+                console.error('Failed to fetch Beian text:', error);
+            });
+
+        // Fetch the website name and title from the server
+        fetch('/get_website_config')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('website-title').textContent = data.title || 'Default Title';
+                document.getElementById('website-name').textContent = data.name || 'Default Name';
+            })
+            .catch(error => {
+                console.error('Failed to fetch website config:', error);
+            });
+    </script>
+</body>
 </html>
