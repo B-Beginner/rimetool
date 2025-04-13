@@ -60,7 +60,8 @@
 </head>
 
 <body class="bg-background text-foreground flex flex-col items-center justify-center p-4">
-    <h1 id="website-name" class="text-5xl font-bold text-primary mb-6"></h1>
+    <h1 id="website-name" class="text-5xl font-bold text-primary mb-2"></h1>
+    <div id="version-info" class="text-lg text-gray-600 mb-6"></div>
 
     <div id="error" class="error hidden text-destructive bg-red-100 border border-red-400 p-4 rounded mb-4"></div>
     <!-- <div id="success" class="success hidden text-accent bg-yellow-100 border border-yellow-400 p-4 rounded mb-4">处理成功！</div>
@@ -154,6 +155,9 @@
     </div>
 
     <script>
+        // 定义GUI版本变量
+        const GUI_VERSION = '1.2.1';
+        
         function log(message, type = 'info') {
             console.log(`[${type.toUpperCase()}] ${message}`);
             const debugContent = document.getElementById('debug-content');
@@ -757,12 +761,18 @@
                 console.error('Failed to fetch Beian text:', error);
             });
 
-        // Fetch the website name and title from the server
+        // Fetch the website name, title and version from the server
         fetch('/get_website_config')
             .then(response => response.json())
             .then(data => {
                 document.getElementById('website-title').textContent = data.title || 'Default Title';
                 document.getElementById('website-name').textContent = data.name || 'Default Name';
+                document.getElementById('version-info').textContent = `后端版本 ${data.version || '未知'}`;
+                // 在version-info元素的末尾添加一个显示GUI版本的元素
+                const guiVersionEl = document.createElement('div');
+                guiVersionEl.textContent = `GUI版本 ${GUI_VERSION}`;
+                guiVersionEl.className = 'text-lg text-gray-600 mt-1';
+                document.getElementById('version-info').appendChild(guiVersionEl);
             })
             .catch(error => {
                 console.error('Failed to fetch website config:', error);
