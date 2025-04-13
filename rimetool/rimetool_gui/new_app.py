@@ -16,7 +16,7 @@ from gui_config import GUIConfig  # Import the configuration class
 """
 app = Flask(__name__, static_folder='templates')
 # 启用 CORS
-# CORS(app, origins="http://127.0.0.1:5500")  # 允许来自 http://127.0.0.1:5500 的请求
+# CORS(app, origins="http://localhost:5500")  # 允许来自 http://localhost:5500 的请求
 CORS(app, origins="*") 
 
 # 配置详细的日志
