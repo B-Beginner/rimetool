@@ -5,4 +5,4 @@ class GUIConfig:
     # Website name and title
     WEBSITE_NAME = "你好👋"
     WEBSITE_TITLE = "医键通词库转换工具"
-    BACKEND_VERSION = "1.7.5"
+    BACKEND_VERSION = "1.8.0"
