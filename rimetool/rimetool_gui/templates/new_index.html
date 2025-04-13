@@ -459,13 +459,55 @@
                             
                             // 从Content-Disposition头中提取文件名
                             const contentDisposition = response.headers.get('Content-Disposition');
-                            let filename = 'download';
+                            let filename = 'download.txt';
+                            
                             if (contentDisposition) {
-                                const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+                                // 使用更精确的正则表达式提取文件名
+                                const filenameRegex = /filename=([^;]*)|filename\*=UTF-8''([^;]*)/;
                                 const matches = filenameRegex.exec(contentDisposition);
-                                if (matches != null && matches[1]) {
-                                    filename = matches[1].replace(/['"]/g, '');
+                                
+                                if (matches) {
+                                    // 获取匹配到的文件名（优先使用UTF-8编码的文件名）
+                                    const extractedName = matches[2] || matches[1];
+                                    if (extractedName) {
+                                        try {
+                                            // 解码文件名（处理URL编码和UTF-8编码）
+                                            filename = decodeURIComponent(extractedName.replace(/["']/g, ''));
+                                            log(`成功提取文件名: ${filename}`, 'info');
+                                        } catch (e) {
+                                            log(`文件名解码失败: ${e.message}`, 'warning');
+                                        }
+                                    }
                                 }
+                            }
+
+                            // 如果没有成功获取文件名或文件名无效，使用时间戳生成文件名
+                            if (filename === 'download.txt' || !filename) {
+                                const now = new Date();
+                                const timestamp = now.getFullYear() +
+                                    String(now.getMonth() + 1).padStart(2, '0') +
+                                    String(now.getDate()).padStart(2, '0') + '_' +
+                                    String(now.getHours()).padStart(2, '0') +
+                                    String(now.getMinutes()).padStart(2, '0') +
+                                    String(now.getSeconds()).padStart(2, '0');
+                                
+                                // 从响应头获取Content-Type来确定文件扩展名
+                                const contentType = response.headers.get('Content-Type');
+                                let extension = '.txt';
+                                
+                                if (contentType) {
+                                    if (contentType.includes('application/zip')) {
+                                        extension = '.zip';
+                                    } else if (contentType.includes('text/plain')) {
+                                        extension = '.txt';
+                                    } else if (contentType.includes('application/yaml')) {
+                                        extension = '.yaml';
+                                    }
+                                    // 可以根据需要添加更多类型
+                                }
+                                
+                                filename = `output_${timestamp}${extension}`;
+                                log(`使用生成的文件名: ${filename}`, 'info');
                             }
                             
                             a.download = filename;
