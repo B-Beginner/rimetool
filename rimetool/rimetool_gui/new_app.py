@@ -10,6 +10,7 @@ from rimetool.main import main_with_args as rimetool_main
 from flask_cors import CORS  # 导入 CORS
 from datetime import datetime, time
 from io import BytesIO
+from gui_config import GUIConfig  # Import the configuration class
 """
 使用方法：运行本文件，然后打开new_index.html，右键点击 Open in Browser 预览选项
 """
@@ -341,8 +342,18 @@ def process_file():
 def serve_static(filename):
     return send_from_directory('templates', filename)
 
+@app.route('/get_beian_text', methods=['GET'])
+def get_beian_text():
+    """Serve the Beian text from the configuration file."""
+    return jsonify({"text": GUIConfig.ICP_BEIAN_TEXT})
 
-
+@app.route('/get_website_config', methods=['GET'])
+def get_website_config():
+    """Serve the website name and title from the configuration file."""
+    return jsonify({
+        "name": GUIConfig.WEBSITE_NAME,
+        "title": GUIConfig.WEBSITE_TITLE
+    })
 
 if __name__ == '__main__':
     logger.info("启动Flask应用")
