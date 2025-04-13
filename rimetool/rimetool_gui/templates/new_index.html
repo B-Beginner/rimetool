@@ -396,7 +396,7 @@
             const timeoutId = setTimeout(() => controller.abort(), 600000); // 10分钟超时，处理大文件
             
             // 先测试服务器是否可用
-            fetch('http://127.0.0.1:5001/', { 
+            fetch('http://localhost:5001/', { 
                 method: 'GET',
                 // signal: AbortSignal.timeout(5001), // 5秒超时
                 mode: 'cors'
@@ -419,7 +419,7 @@
             // 主请求函数
             function sendMainRequest() {
                 // 发送请求
-                fetch('http://127.0.0.1:5001/process', {
+                fetch('http://localhost:5001/process', {
                     method: 'POST',
                     body: formData,
                     signal: controller.signal,
@@ -459,30 +459,21 @@
                             
                             // 从Content-Disposition头中提取文件名
                             const contentDisposition = response.headers.get('Content-Disposition');
-                            let filename = 'download.txt';
+                            let filename = '';
                             
                             if (contentDisposition) {
-                                // 使用更精确的正则表达式提取文件名
-                                const filenameRegex = /filename=([^;]*)|filename\*=UTF-8''([^;]*)/;
-                                const matches = filenameRegex.exec(contentDisposition);
-                                
-                                if (matches) {
-                                    // 获取匹配到的文件名（优先使用UTF-8编码的文件名）
-                                    const extractedName = matches[2] || matches[1];
-                                    if (extractedName) {
-                                        try {
-                                            // 解码文件名（处理URL编码和UTF-8编码）
-                                            filename = decodeURIComponent(extractedName.replace(/["']/g, ''));
-                                            log(`成功提取文件名: ${filename}`, 'info');
-                                        } catch (e) {
-                                            log(`文件名解码失败: ${e.message}`, 'warning');
-                                        }
-                                    }
+                                // 使用正则表达式从Content-Disposition中提取文件名
+                                const matches = /filename=(.+)/.exec(contentDisposition);
+                                if (matches && matches[1]) {
+                                    filename = matches[1];
+                                    log(`从响应头获取到文件名: ${filename}`, 'info');
+                                } else {
+                                    log('无法从Content-Disposition中提取文件名', 'warning');
                                 }
                             }
 
-                            // 如果没有成功获取文件名或文件名无效，使用时间戳生成文件名
-                            if (filename === 'download.txt' || !filename) {
+                            // 如果没有成功获取文件名，使用时间戳生成文件名
+                            if (!filename) {
                                 const now = new Date();
                                 const timestamp = now.getFullYear() +
                                     String(now.getMonth() + 1).padStart(2, '0') +
@@ -503,7 +494,6 @@
                                     } else if (contentType.includes('application/yaml')) {
                                         extension = '.yaml';
                                     }
-                                    // 可以根据需要添加更多类型
                                 }
                                 
                                 filename = `output_${timestamp}${extension}`;
@@ -545,7 +535,7 @@
                     if (err.name === 'AbortError') {
                         errorMsg = '请求超时（10分钟），服务器处理时间过长';
                     } else if (err instanceof TypeError && err.message.includes('Failed to fetch')) {
-                        errorMsg = '无法连接到服务器(http://127.0.0.1:5001)，请检查服务器是否运行';
+                        errorMsg = '无法连接到服务器(http://localhost:5001)，请检查服务器是否运行';
                         // 尝试提供更多调试信息
                         log('尝试连接服务器失败，请确保：', 'error');
                         log('1. Python服务器正在运行 (python new_app.py)', 'error');
@@ -575,7 +565,7 @@
                                     return obj;
                                 }, {}),
                             server: {
-                                url: 'http://127.0.0.1:5001',
+                                url: 'http://localhost:5001',
                                 endpoint: '/process',
                                 method: 'POST'
                             }
