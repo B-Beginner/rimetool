@@ -55,4 +55,4 @@ jobs:
           # 给清单打上多个标签
           tags: |
             whitewatercn/rimetool:${{ steps.date.outputs.today }}
-            whitewatercn/rimetool:20250413_14-31
+            whitewatercn/rimetool:20250414_01
