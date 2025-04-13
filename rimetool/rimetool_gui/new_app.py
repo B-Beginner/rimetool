@@ -352,7 +352,8 @@ def get_website_config():
     """Serve the website name and title from the configuration file."""
     return jsonify({
         "name": GUIConfig.WEBSITE_NAME,
-        "title": GUIConfig.WEBSITE_TITLE
+        "title": GUIConfig.WEBSITE_TITLE,
+        "version": GUIConfig.BACKEND_VERSION,
     })
 
 if __name__ == '__main__':
