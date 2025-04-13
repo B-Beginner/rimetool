@@ -16,7 +16,7 @@ from gui_config import GUIConfig  # Import the configuration class
 """
 app = Flask(__name__, static_folder='templates')
 # 启用 CORS
-# CORS(app, origins="http://127.0.0.1:5500")  # 允许来自 http://127.0.0.1:5500 的请求
+# CORS(app, origins="http://localhost:5500")  # 允许来自 http://localhost:5500 的请求
 CORS(app, origins="*") 
 
 # 配置详细的日志
@@ -352,7 +352,8 @@ def get_website_config():
     """Serve the website name and title from the configuration file."""
     return jsonify({
         "name": GUIConfig.WEBSITE_NAME,
-        "title": GUIConfig.WEBSITE_TITLE
+        "title": GUIConfig.WEBSITE_TITLE,
+        "version": GUIConfig.BACKEND_VERSION,
     })
 
 if __name__ == '__main__':

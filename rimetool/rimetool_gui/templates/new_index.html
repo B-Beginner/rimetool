@@ -60,7 +60,8 @@
 </head>
 
 <body class="bg-background text-foreground flex flex-col items-center justify-center p-4">
-    <h1 id="website-name" class="text-5xl font-bold text-primary mb-6"></h1>
+    <h1 id="website-name" class="text-5xl font-bold text-primary mb-2"></h1>
+    <div id="version-info" class="text-lg text-gray-600 mb-6"></div>
 
     <div id="error" class="error hidden text-destructive bg-red-100 border border-red-400 p-4 rounded mb-4"></div>
     <!-- <div id="success" class="success hidden text-accent bg-yellow-100 border border-yellow-400 p-4 rounded mb-4">处理成功！</div>
@@ -154,6 +155,78 @@
     </div>
 
     <script>
+        // 定义GUI版本变量
+        const GUI_VERSION = '1.2.1';
+        
+        // 定义服务器地址列表，按优先级排序
+        const serverHosts = ['http://127.0.0.1', 'http://localhost', 'http://0.0.0.0'];
+        
+        // 尝试从不同主机获取数据的通用函数
+        async function fetchWithFallback(endpoint, options = {}) {
+            const failedHosts = [];
+            
+            for (let i = 0; i < serverHosts.length; i++) {
+                const host = serverHosts[i];
+                try {
+                    log(`尝试从 ${host}:5001${endpoint} 获取数据...`, 'info');
+                    const response = await fetch(`${host}:5001${endpoint}`, options);
+                    if (response.ok) {
+                        log(`从 ${host}:5001 获取数据成功`, 'success');
+                        return await response.json();
+                    } else {
+                        log(`从 ${host}:5001 获取数据失败，状态码: ${response.status}`, 'warning');
+                        failedHosts.push(`${host}:5001 (状态码: ${response.status})`);
+                    }
+                } catch (error) {
+                    log(`从 ${host}:5001 获取数据出错: ${error.message}`, 'warning');
+                    failedHosts.push(`${host}:5001 (${error.message})`);
+                }
+            }
+            
+            // 所有主机都失败了
+            log(`所有服务器地址获取 ${endpoint} 数据均失败`, 'error');
+            log(`尝试失败的地址: ${failedHosts.join(', ')}`, 'error');
+            throw new Error(`无法从任何服务器地址获取数据: ${failedHosts.join(', ')}`);
+        }
+        
+        // Fetch the text for the link from the server
+        fetchWithFallback('/get_beian_text')
+            .then(data => {
+                const beianLink = document.getElementById('beian-link');
+                beianLink.textContent = data.text || '备案信息';
+            })
+            .catch(error => {
+                console.error('Failed to fetch Beian text:', error);
+                // 设置默认备案信息
+                const beianLink = document.getElementById('beian-link');
+                beianLink.textContent = '备案信息';
+            });
+
+        // Fetch the website name, title and version from the server
+        fetchWithFallback('/get_website_config')
+            .then(data => {
+                document.getElementById('website-title').textContent = data.title || 'Default Title';
+                document.getElementById('website-name').textContent = data.name || 'Default Name';
+                document.getElementById('version-info').textContent = `后端版本 ${data.version || '未知'}`;
+                // 在version-info元素的末尾添加一个显示GUI版本的元素
+                const guiVersionEl = document.createElement('div');
+                guiVersionEl.textContent = `GUI版本 ${GUI_VERSION}`;
+                guiVersionEl.className = 'text-lg text-gray-600 mt-1';
+                document.getElementById('version-info').appendChild(guiVersionEl);
+            })
+            .catch(error => {
+                console.error('Failed to fetch website config:', error);
+                // 设置默认网站信息
+                document.getElementById('website-title').textContent = 'RIME工具';
+                document.getElementById('website-name').textContent = 'RIME工具';
+                document.getElementById('version-info').textContent = `后端版本 未知`;
+                // 在version-info元素的末尾添加一个显示GUI版本的元素
+                const guiVersionEl = document.createElement('div');
+                guiVersionEl.textContent = `GUI版本 ${GUI_VERSION}`;
+                guiVersionEl.className = 'text-lg text-gray-600 mt-1';
+                document.getElementById('version-info').appendChild(guiVersionEl);
+            });
+
         function log(message, type = 'info') {
             console.log(`[${type.toUpperCase()}] ${message}`);
             const debugContent = document.getElementById('debug-content');
@@ -204,14 +277,56 @@
         function showDetailedError(error) {
             log(`详细错误: ${JSON.stringify(error)}`, 'error');
             
+            // 创建错误详情内容
+            let errorContent = '';
+            
+            // 如果有失败的主机列表，先显示这部分信息
+            if (error.failedHosts && error.failedHosts.length > 0) {
+                errorContent += '<div class="mb-3">';
+                errorContent += '<h4 class="font-bold mb-2">尝试失败的服务器地址：</h4>';
+                errorContent += '<ul class="list-disc pl-5 mb-3">';
+                error.failedHosts.forEach(host => {
+                    errorContent += `<li class="mb-1">${host}</li>`;
+                });
+                errorContent += '</ul>';
+                errorContent += '</div>';
+            } else if (error.server && error.server.triedHosts && error.server.triedHosts.length > 0) {
+                errorContent += '<div class="mb-3">';
+                errorContent += '<h4 class="font-bold mb-2">尝试失败的服务器地址：</h4>';
+                errorContent += '<ul class="list-disc pl-5 mb-3">';
+                error.server.triedHosts.forEach(host => {
+                    errorContent += `<li class="mb-1">${host}</li>`;
+                });
+                errorContent += '</ul>';
+                errorContent += '</div>';
+            }
+            
+            // 如果有建议列表，显示建议
+            if (error.suggestions && error.suggestions.length > 0) {
+                errorContent += '<div class="mb-3">';
+                errorContent += '<h4 class="font-bold mb-2">可能的解决方案：</h4>';
+                errorContent += '<ul class="list-disc pl-5 mb-3">';
+                error.suggestions.forEach(suggestion => {
+                    errorContent += `<li class="mb-1">${suggestion}</li>`;
+                });
+                errorContent += '</ul>';
+                errorContent += '</div>';
+            }
+            
+            // 添加完整的错误信息
+            errorContent += '<div class="mb-3">';
+            errorContent += '<h4 class="font-bold mb-2">完整错误信息：</h4>';
+            errorContent += `<pre class="whitespace-pre-wrap bg-gray-100 p-3 rounded text-sm overflow-auto max-h-36">${JSON.stringify(error, null, 2)}</pre>`;
+            errorContent += '</div>';
+            
             // 创建详细错误对话框
             const errorDialog = document.createElement('div');
             errorDialog.className = 'fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50';
             errorDialog.innerHTML = `
-                <div class="bg-white p-6 rounded-lg shadow-lg max-w-lg w-full">
+                <div class="bg-white p-6 rounded-lg shadow-lg max-w-xl w-full">
                     <h3 class="text-xl font-bold mb-4 text-red-600">错误详情</h3>
-                    <div class="mb-4 overflow-auto max-h-96 bg-gray-100 p-4 rounded">
-                        <pre class="whitespace-pre-wrap">${JSON.stringify(error, null, 2)}</pre>
+                    <div class="mb-4 overflow-auto max-h-96 p-2 rounded">
+                        ${errorContent}
                     </div>
                     <div class="flex justify-end">
                         <button id="close-error" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">关闭</button>
@@ -395,31 +510,86 @@
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 600000); // 10分钟超时，处理大文件
             
-            // 先测试服务器是否可用
-            fetch('http://127.0.0.1:5001/', { 
-                method: 'GET',
-                // signal: AbortSignal.timeout(5001), // 5秒超时
-                mode: 'cors'
-            })
-            .then(response => {
-                if (response.ok) {
-                    log('服务器连接正常，开始上传文件...', 'info');
-                    sendMainRequest();
-                } else {
-                    throw new Error('服务器状态异常');
+            // 使用全局定义的serverHosts，不再重复定义
+            let currentHostIndex = 0;
+            const failedHosts = [];
+            
+            // 测试服务器连接，依次尝试不同的主机地址
+            function testServerConnection() {
+                if (currentHostIndex >= serverHosts.length) {
+                    // 所有主机地址都尝试失败
+                    log('所有服务器地址连接测试均失败', 'error');
+                    log(`尝试失败的地址: ${failedHosts.join(', ')}`, 'error');
+                    
+                    let errorMsg = '无法连接到服务器，请检查服务器是否运行';
+                    error.textContent = '错误：' + errorMsg;
+                    error.style.display = 'block';
+                    
+                    // 添加详情按钮，显示尝试失败的地址
+                    const detailButton = document.createElement('button');
+                    detailButton.textContent = '查看详情';
+                    detailButton.className = 'bg-yellow-500 text-white px-4 py-2 rounded mt-2 mr-2';
+                    detailButton.onclick = function() {
+                        showDetailedError({
+                            message: '所有服务器地址连接测试均失败',
+                            failedHosts: failedHosts,
+                            suggestions: [
+                                'Python服务器可能未运行 (执行 python new_app.py)',
+                                '服务器可能未监听5001端口',
+                                '防火墙可能阻止了连接',
+                                '浏览器可能不允许跨域请求'
+                            ]
+                        });
+                    };
+                    error.appendChild(detailButton);
+                    
+                    // 添加重试按钮
+                    const retryButton = document.createElement('button');
+                    retryButton.textContent = '重试';
+                    retryButton.className = 'bg-blue-500 text-white px-4 py-2 rounded mt-2';
+                    retryButton.onclick = function() {
+                        processFile(type);
+                    };
+                    error.appendChild(retryButton);
+                    return;
                 }
-            })
-            .catch(err => {
-                log('服务器连接测试失败，尝试继续上传...', 'warning');
-                log(`连接测试错误: ${err.message}`, 'warning');
-                // 即使连接测试失败，仍然尝试主请求
-                sendMainRequest();
-            });
+                
+                const currentHost = serverHosts[currentHostIndex];
+                log(`正在测试服务器地址: ${currentHost}:5001...`, 'info');
+                
+                fetch(`${currentHost}:5001/`, { 
+                    method: 'GET',
+                    mode: 'cors',
+                    // 设置5秒超时
+                    signal: AbortSignal.timeout(5000)
+                })
+                .then(response => {
+                    if (response.ok) {
+                        log(`服务器地址 ${currentHost}:5001 连接正常，开始上传文件...`, 'info');
+                        // 使用当前可用的主机地址进行主请求
+                        sendMainRequest(currentHost);
+                    } else {
+                        log(`服务器地址 ${currentHost}:5001 连接异常，状态码: ${response.status}`, 'warning');
+                        failedHosts.push(`${currentHost}:5001 (状态码: ${response.status})`);
+                        currentHostIndex++;
+                        testServerConnection();
+                    }
+                })
+                .catch(err => {
+                    log(`服务器地址 ${currentHost}:5001 连接失败: ${err.message}`, 'warning');
+                    failedHosts.push(`${currentHost}:5001 (${err.message})`);
+                    currentHostIndex++;
+                    testServerConnection();
+                });
+            }
+            
+            // 开始测试服务器连接
+            testServerConnection();
             
             // 主请求函数
-            function sendMainRequest() {
+            function sendMainRequest(host) {
                 // 发送请求
-                fetch('http://127.0.0.1:5001/process', {
+                fetch(`${host}:5001/process`, {
                     method: 'POST',
                     body: formData,
                     signal: controller.signal,
@@ -459,30 +629,21 @@
                             
                             // 从Content-Disposition头中提取文件名
                             const contentDisposition = response.headers.get('Content-Disposition');
-                            let filename = 'download.txt';
+                            let filename = '';
                             
                             if (contentDisposition) {
-                                // 使用更精确的正则表达式提取文件名
-                                const filenameRegex = /filename=([^;]*)|filename\*=UTF-8''([^;]*)/;
-                                const matches = filenameRegex.exec(contentDisposition);
-                                
-                                if (matches) {
-                                    // 获取匹配到的文件名（优先使用UTF-8编码的文件名）
-                                    const extractedName = matches[2] || matches[1];
-                                    if (extractedName) {
-                                        try {
-                                            // 解码文件名（处理URL编码和UTF-8编码）
-                                            filename = decodeURIComponent(extractedName.replace(/["']/g, ''));
-                                            log(`成功提取文件名: ${filename}`, 'info');
-                                        } catch (e) {
-                                            log(`文件名解码失败: ${e.message}`, 'warning');
-                                        }
-                                    }
+                                // 使用正则表达式从Content-Disposition中提取文件名
+                                const matches = /filename=(.+)/.exec(contentDisposition);
+                                if (matches && matches[1]) {
+                                    filename = matches[1];
+                                    log(`从响应头获取到文件名: ${filename}`, 'info');
+                                } else {
+                                    log('无法从Content-Disposition中提取文件名', 'warning');
                                 }
                             }
 
-                            // 如果没有成功获取文件名或文件名无效，使用时间戳生成文件名
-                            if (filename === 'download.txt' || !filename) {
+                            // 如果没有成功获取文件名，使用时间戳生成文件名
+                            if (!filename) {
                                 const now = new Date();
                                 const timestamp = now.getFullYear() +
                                     String(now.getMonth() + 1).padStart(2, '0') +
@@ -503,7 +664,6 @@
                                     } else if (contentType.includes('application/yaml')) {
                                         extension = '.yaml';
                                     }
-                                    // 可以根据需要添加更多类型
                                 }
                                 
                                 filename = `output_${timestamp}${extension}`;
@@ -545,13 +705,22 @@
                     if (err.name === 'AbortError') {
                         errorMsg = '请求超时（10分钟），服务器处理时间过长';
                     } else if (err instanceof TypeError && err.message.includes('Failed to fetch')) {
-                        errorMsg = '无法连接到服务器(http://127.0.0.1:5001)，请检查服务器是否运行';
+                        errorMsg = `无法连接到服务器(${host}:5001)，请检查服务器是否运行`;
                         // 尝试提供更多调试信息
                         log('尝试连接服务器失败，请确保：', 'error');
                         log('1. Python服务器正在运行 (python new_app.py)', 'error');
                         log('2. 服务器正在监听5001端口', 'error');
                         log('3. 没有防火墙阻止连接', 'error');
                         log('4. 浏览器允许跨域请求', 'error');
+                        
+                        // 如果当前不是最后一个主机，尝试下一个主机
+                        if (currentHostIndex < serverHosts.length - 1) {
+                            log(`尝试使用下一个服务器地址: ${serverHosts[currentHostIndex + 1]}:5001`, 'info');
+                            failedHosts.push(`${host}:5001 (${err.message})`);
+                            currentHostIndex++;
+                            testServerConnection();
+                            return;
+                        }
                     }
                     
                     log(`发生错误: ${errorMsg}`, 'error');
@@ -575,9 +744,10 @@
                                     return obj;
                                 }, {}),
                             server: {
-                                url: 'http://127.0.0.1:5001',
+                                url: `${host}:5001`,
                                 endpoint: '/process',
-                                method: 'POST'
+                                method: 'POST',
+                                triedHosts: failedHosts
                             }
                         });
                     };
@@ -594,6 +764,186 @@
                 });
             }
         }
+
+            
+            // 主请求函数
+            function sendMainRequest(host) {
+                // 发送请求
+                fetch(`${host}:5001/process`, {
+                    method: 'POST',
+                    body: formData,
+                    signal: controller.signal,
+                    headers: {
+                        'Accept': 'application/json',
+                    },
+                    mode: 'cors',
+                    credentials: 'same-origin'
+                })
+                .then(response => {
+                    clearTimeout(timeoutId); // 清除超时
+                    
+                    if (!response.ok) {
+                        return response.text().then(text => {
+                            throw new Error(text);
+                        });
+                    }
+                    return response;
+                })
+                .then(response => {
+                    log(`收到响应 - 状态: ${response.status}`);
+                    
+                    // 检查响应的Content-Type
+                    const contentType = response.headers.get('Content-Type');
+                    log(`响应内容类型: ${contentType}`);
+                    
+                    // 如果是下载文件的响应
+                    if (contentType && (contentType.includes('application/octet-stream') || 
+                                       contentType.includes('application/zip'))) {
+                        log('检测到文件下载，开始下载...');
+                        return response.blob().then(blob => {
+                            // 创建一个临时的<a>元素用于下载
+                            const url = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.style.display = 'none';
+                            a.href = url;
+                            
+                            // 从Content-Disposition头中提取文件名
+                            const contentDisposition = response.headers.get('Content-Disposition');
+                            let filename = '';
+                            
+                            if (contentDisposition) {
+                                // 使用正则表达式从Content-Disposition中提取文件名
+                                const matches = /filename=(.+)/.exec(contentDisposition);
+                                if (matches && matches[1]) {
+                                    filename = matches[1];
+                                    log(`从响应头获取到文件名: ${filename}`, 'info');
+                                } else {
+                                    log('无法从Content-Disposition中提取文件名', 'warning');
+                                }
+                            }
+
+                            // 如果没有成功获取文件名，使用时间戳生成文件名
+                            if (!filename) {
+                                const now = new Date();
+                                const timestamp = now.getFullYear() +
+                                    String(now.getMonth() + 1).padStart(2, '0') +
+                                    String(now.getDate()).padStart(2, '0') + '_' +
+                                    String(now.getHours()).padStart(2, '0') +
+                                    String(now.getMinutes()).padStart(2, '0') +
+                                    String(now.getSeconds()).padStart(2, '0');
+                                
+                                // 从响应头获取Content-Type来确定文件扩展名
+                                const contentType = response.headers.get('Content-Type');
+                                let extension = '.txt';
+                                
+                                if (contentType) {
+                                    if (contentType.includes('application/zip')) {
+                                        extension = '.zip';
+                                    } else if (contentType.includes('text/plain')) {
+                                        extension = '.txt';
+                                    } else if (contentType.includes('application/yaml')) {
+                                        extension = '.yaml';
+                                    }
+                                }
+                                
+                                filename = `output_${timestamp}${extension}`;
+                                log(`使用生成的文件名: ${filename}`, 'info');
+                            }
+                            
+                            a.download = filename;
+                            
+                            // 显示下载提示
+                            showDownloadHelp(filename);
+                            
+                            document.body.appendChild(a);
+                            a.click();
+                            window.URL.revokeObjectURL(url);
+                            log(`文件 "${filename}" 下载中...`, 'success');
+                            
+                            // 保存下载信息到本地存储
+                            saveLastDownload(filename);
+                            
+                            return Promise.resolve();
+                        });
+                    } else {
+                        // 不是下载文件的响应
+                        log('处理成功，但未收到文件下载响应');
+                        return Promise.resolve();
+                    }
+                })
+                .then(() => {
+                    error.style.display = 'none';
+                    log('处理成功，处理好的文件位于 gui/outputs 文件夹中！');
+                    log('如果没有自动下载，请查看后端日志获取详细信息');
+                })
+                .catch(err => {
+                    clearTimeout(timeoutId); // 清除超时
+                    
+                    let errorMsg = err.message || '未知错误';
+                    
+                    // 处理特定类型的错误
+                    if (err.name === 'AbortError') {
+                        errorMsg = '请求超时（10分钟），服务器处理时间过长';
+                    } else if (err instanceof TypeError && err.message.includes('Failed to fetch')) {
+                        errorMsg = `无法连接到服务器(${host}:5001)，请检查服务器是否运行`;
+                        // 尝试提供更多调试信息
+                        log('尝试连接服务器失败，请确保：', 'error');
+                        log('1. Python服务器正在运行 (python new_app.py)', 'error');
+                        log('2. 服务器正在监听5001端口', 'error');
+                        log('3. 没有防火墙阻止连接', 'error');
+                        log('4. 浏览器允许跨域请求', 'error');
+                        
+                        // 如果当前不是最后一个主机，尝试下一个主机
+                        if (currentHostIndex < serverHosts.length - 1) {
+                            log(`尝试使用下一个服务器地址: ${serverHosts[currentHostIndex + 1]}:5001`, 'info');
+                            failedHosts.push(`${host}:5001 (${err.message})`);
+                            currentHostIndex++;
+                            testServerConnection();
+                            return;
+                        }
+                    }
+                    
+                    log(`发生错误: ${errorMsg}`, 'error');
+                    error.textContent = '错误：' + errorMsg;
+                    error.style.display = 'block';
+                    
+                    // 添加详情按钮
+                    const detailButton = document.createElement('button');
+                    detailButton.textContent = '查看详情';
+                    detailButton.className = 'bg-yellow-500 text-white px-4 py-2 rounded mt-2 mr-2';
+                    detailButton.onclick = function() {
+                        showDetailedError({
+                            message: err.message,
+                            name: err.name,
+                            stack: err.stack,
+                            type: type,
+                            formData: Array.from(formData.entries())
+                                .filter(pair => !pair[0].includes('file') && !pair[0].includes('zip_file'))
+                                .reduce((obj, [key, value]) => {
+                                    obj[key] = value;
+                                    return obj;
+                                }, {}),
+                            server: {
+                                url: `${host}:5001`,
+                                endpoint: '/process',
+                                method: 'POST',
+                                triedHosts: failedHosts
+                            }
+                        });
+                    };
+                    error.appendChild(detailButton);
+                    
+                    // 添加重试按钮
+                    const retryButton = document.createElement('button');
+                    retryButton.textContent = '重试';
+                    retryButton.className = 'bg-blue-500 text-white px-4 py-2 rounded mt-2';
+                    retryButton.onclick = function() {
+                        processFile(type);
+                    };
+                    error.appendChild(retryButton);
+                });
+            }
+        
 
         // 页面加载完成时的初始化
         window.onload = function () {
@@ -756,26 +1106,70 @@
     </footer>
 
     <script>
+        // 尝试从不同主机获取数据的通用函数
+        async function fetchWithFallback(endpoint, options = {}) {
+            const failedHosts = [];
+            
+            for (let i = 0; i < serverHosts.length; i++) {
+                const host = serverHosts[i];
+                try {
+                    log(`尝试从 ${host}:5001${endpoint} 获取数据...`, 'info');
+                    const response = await fetch(`${host}:5001${endpoint}`, options);
+                    if (response.ok) {
+                        log(`从 ${host}:5001 获取数据成功`, 'success');
+                        return await response.json();
+                    } else {
+                        log(`从 ${host}:5001 获取数据失败，状态码: ${response.status}`, 'warning');
+                        failedHosts.push(`${host}:5001 (状态码: ${response.status})`);
+                    }
+                } catch (error) {
+                    log(`从 ${host}:5001 获取数据出错: ${error.message}`, 'warning');
+                    failedHosts.push(`${host}:5001 (${error.message})`);
+                }
+            }
+            
+            // 所有主机都失败了
+            log(`所有服务器地址获取 ${endpoint} 数据均失败`, 'error');
+            log(`尝试失败的地址: ${failedHosts.join(', ')}`, 'error');
+            throw new Error(`无法从任何服务器地址获取数据: ${failedHosts.join(', ')}`);
+        }
+        
         // Fetch the text for the link from the server
-        fetch('/get_beian_text')
-            .then(response => response.json())
+        fetchWithFallback('/get_beian_text')
             .then(data => {
                 const beianLink = document.getElementById('beian-link');
                 beianLink.textContent = data.text || '备案信息';
             })
             .catch(error => {
                 console.error('Failed to fetch Beian text:', error);
+                // 设置默认备案信息
+                const beianLink = document.getElementById('beian-link');
+                beianLink.textContent = '备案信息';
             });
 
-        // Fetch the website name and title from the server
-        fetch('/get_website_config')
-            .then(response => response.json())
+        // Fetch the website name, title and version from the server
+        fetchWithFallback('/get_website_config')
             .then(data => {
                 document.getElementById('website-title').textContent = data.title || 'Default Title';
                 document.getElementById('website-name').textContent = data.name || 'Default Name';
+                document.getElementById('version-info').textContent = `后端版本 ${data.version || '未知'}`;
+                // 在version-info元素的末尾添加一个显示GUI版本的元素
+                const guiVersionEl = document.createElement('div');
+                guiVersionEl.textContent = `GUI版本 ${GUI_VERSION}`;
+                guiVersionEl.className = 'text-lg text-gray-600 mt-1';
+                document.getElementById('version-info').appendChild(guiVersionEl);
             })
             .catch(error => {
                 console.error('Failed to fetch website config:', error);
+                // 设置默认网站信息
+                document.getElementById('website-title').textContent = 'RIME工具';
+                document.getElementById('website-name').textContent = 'RIME工具';
+                document.getElementById('version-info').textContent = `后端版本 未知`;
+                // 在version-info元素的末尾添加一个显示GUI版本的元素
+                const guiVersionEl = document.createElement('div');
+                guiVersionEl.textContent = `GUI版本 ${GUI_VERSION}`;
+                guiVersionEl.className = 'text-lg text-gray-600 mt-1';
+                document.getElementById('version-info').appendChild(guiVersionEl);
             });
     </script>
 </body>
