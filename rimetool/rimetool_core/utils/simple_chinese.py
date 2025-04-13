@@ -6,7 +6,7 @@ from .roman_to_chinese import roman_to_chinese
 
 
 
-def main(input_file, output_path):
+def main(input_file, output_path, is_web=False):
 	# 确保文件编码正确读入，并在输出时转为gbk
 	encoding = detect_file_encoding(input_file)
 	
@@ -31,6 +31,12 @@ def main(input_file, output_path):
 			new_line_with_pinyin = new_line + '\t' + pinyin + '\t1\n'
 			outfile.write(new_line_with_pinyin)
 		print(f"已生成文件 {os.path.abspath(outfile.name)}")
+		
+    # 返回文件名，用于web下载
+	filename = os.path.basename(output_file)
+	if is_web:
+		return output_file
+	return filename
 
 if __name__ == "__main__":
     main()

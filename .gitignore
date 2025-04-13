@@ -1,17 +1,25 @@
+# pypi构建
 rimetool.egg-info/
 build/
 dist/
 __pycache__/
-.DS_Store
-rimetool_cache/
+# docker构建
+
 
 # 测试文件
 test/
 *dict.yaml.txt
 *dict.yaml
 *output*
+rimetool/rimetool_gui/uploads/
+rimetool/rimetool_gui/outputs/
 
+# 日志文件
+rimetool_gui/rimetool_gui.log
 
 # 环境
 .venv/
 .vscode/
+
+# 其他
+.DS_Store

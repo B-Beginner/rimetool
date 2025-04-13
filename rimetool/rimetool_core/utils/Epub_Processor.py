@@ -15,25 +15,28 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 warnings.simplefilter(action='ignore', category=UserWarning)
 
 
-current_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+# current_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
 
 class EpubProcessor:
     """
     处理EPUB文件的类，包含多种方法，如epub->txt，txt->长短句，txt和长短句->rime
     """
-    def __init__(self, input_path, output_path, output_files):
+    def __init__(self, input_path, output_path, output_files, current_time, is_web=False):
         """初始化处理器
         Args:
             input_path: EPUB文件本身的路径
             output_path: 输出文件路径，这是路径也就是文件夹，不是文件
             output_files: 输出文件路径，这是txt文件们：原版、短句、长句
+            is_web: 是否是通过Web界面调用
         """
-        self.input_path = input_path # 这是EPUB文件本身的路径
-        self.output_path = output_path # 这是路径也就是文件夹，不是文件
+        self.input_path = input_path # 这是EPUB文件本身的路径 .replace('\\', '/') 
+        self.output_path = output_path # 这是路径也就是文件夹，不是文件  .replace('\\', '/')
         self.output_files = output_files # 这是txt文件们：原版、短句、长句
         self.content = ""
         self.processed_content = []
-
+        self.current_time = current_time
+        self.is_web = is_web
+        self.web_output_files = []  # 用于收集需要在Web界面下载的文件
     def read_epub(self):
         """从EPUB文件中读取内容"""
         tmp=''
@@ -89,20 +92,18 @@ class EpubProcessor:
     
     def save_output(self, content):
         """保存处理结果到文件"""
-        txt_file = os.path.join(self.output_path, "epub转txt.txt")
+        txt_file = os.path.join(self.output_path, f"epub转txt_{self.current_time}.txt")
         with open(txt_file, 'w', encoding='utf-8') as f:
-
-            # 目前txt上还没修好写入水印，表现为：转化成长短句时，水印也会被变成rime格式
-            # f.write(
-            #     "# 生成工具 https://github.com/whitewatercn/rimetool\n" +
-            #     "# 生成时间 " + current_time + "\n" +
-            #     "---\n"
-            # )
             f.write(content)
+        if self.is_web:
+            self.web_output_files.append(txt_file)
+        return txt_file
 
-    def split_into_short_sentences(self, input_path,output_dir):
+    def split_into_short_sentences(self, input_path, output_dir):
+        # 添加时间戳到输出文件名
+        output_path = f"{os.path.splitext(output_dir)[0]}_{self.current_time}{os.path.splitext(output_dir)[1]}"
+        
         # 读取清理后的内容
-        # epub_txt_file = os.path.join(self.output_path, "epub转txt.txt")
         epub_txt_file = input_path
         with open(epub_txt_file, 'r', encoding='utf-8') as f:
             file_content = f.read()
@@ -111,10 +112,15 @@ class EpubProcessor:
         split_content = re.split(r'[，。！？；：、\s\n]+', file_content)
         
         # 保存结果
-        with open(output_dir, 'w', encoding='utf-8') as output_file:
+        with open(output_path, 'w', encoding='utf-8') as output_file:
             for item in split_content:
                 if item:  # 避免写入空字符串
                     output_file.write(item + '\n')
+        
+        if self.is_web:
+            self.web_output_files.append(output_path)
+        
+        return output_path
     
     # 长句不需要删除标点，输出时依然需要输出标点，如
     # ✅上四味，以水八升，先煮蜀漆、麻黄，
@@ -125,14 +131,16 @@ class EpubProcessor:
         Args:
             output_path: 输出文件路径
         """
+        # 添加时间戳到输出文件名
+        output_path = f"{os.path.splitext(output_dir)[0]}_{self.current_time}{os.path.splitext(output_dir)[1]}"
+        
         # 读取清理后的内容
-        # epub_txt_file = os.path.join(self.output_path, "epub转txt.txt")
-        epub_txt_file = self.input_path
+        epub_txt_file = input_path
         with open(epub_txt_file, 'r', encoding='utf-8') as f:
             file_content = f.read()
         
         # 保存结果
-        with open(output_dir, 'w', encoding='utf-8') as output_file:
+        with open(output_path, 'w', encoding='utf-8') as output_file:
             
             # output_file.write(
             #     "# 生成工具 https://github.com/whitewatercn/rimetool\n" +
@@ -143,7 +151,12 @@ class EpubProcessor:
                 if item:  # 避免写入空字符串
                     cleaned_item = item
                     output_file.write(cleaned_item + '\n')
-    
+        
+        if self.is_web:
+            self.web_output_files.append(output_path)
+        
+        return output_path
+
     def to_rime(self, input_file, output_name):
         """txt->rime
         Args:
@@ -157,7 +170,7 @@ class EpubProcessor:
              open(output_file, 'w', encoding='utf-8') as outfile:
             outfile.write(
                 "# 生成工具 https://github.com/whitewatercn/rimetool\n" +
-                "# 生成时间 " + current_time + "\n" +
+                "# 生成时间 " + self.current_time + "\n" +
                 "---\n"
             )
             # 处理每一行
@@ -172,12 +185,17 @@ class EpubProcessor:
                     content = replace_roman_with_chinese(content)
                     # 删除所有的 '-'
                     content = content.replace('-', '')
+                    pinyin = ''
                     # 生成拼音
-                    pinyin = ' '.join(pinyin_process(content))
+                    pinyin = pinyin.join(pinyin_process(content))
                     # 写入rime格式
                     outfile.write(f"{content}\t{pinyin}\t1\n")
         
         print(f"已生成rime格式文件: {os.path.abspath(output_file)}")
+        
+        if self.is_web:
+            self.web_output_files.append(output_file)
+        
         return output_file
     
     
@@ -185,15 +203,23 @@ class EpubProcessor:
         """
         一键直达 epub->rime
         """
-        self.epub_to_txt()
-        self.txt_to_rime_all(output_files)
+        input_path = self.epub_to_txt()
+        result_files = self.txt_to_rime_all(input_path, output_files)
+        
+        if self.is_web:
+            return self.web_output_files
+        return result_files
 
     def txt_to_rime_all(self, input_path, output_files):
         """
         一键直达 txt->长短句的rime
         """
-        self.txt_to_short_long(input_path, output_files)
-        self.txt_short_long_to_rime(output_files)
+        short_path = self.txt_to_short_long(input_path, output_files)
+        rime_files = self.txt_short_long_to_rime(output_files)
+        
+        if self.is_web:
+            return self.web_output_files
+        return rime_files
 
 
     def epub_to_txt(self):
@@ -203,7 +229,12 @@ class EpubProcessor:
         print("\n*** 第一部分: epub->txt ***\n")
         # 第一步：读取EPUB文件并处理格式
         print("读取EPUB文件...")
-        sections = self.read_epub()
+        try:
+            sections = self.read_epub()
+            print(f"EPUB文件读取成功，内容长度: {len(sections)}")
+        except Exception as e:
+            print(f"读取EPUB文件失败: {e}")
+            return None
         # print("步骤2: 提取章节内容...")
         # sections = self.extract_sections()
         print("处理HTML内容...")
@@ -212,43 +243,48 @@ class EpubProcessor:
         final_content = self.clean_html()
         # print("步骤5: 保存结果...")
         self.content = final_content
-        self.save_output(final_content)
+        output_file = self.save_output(final_content)
         
-        print(f"epub->txt 处理完成！结果已保存到: {self.output_path}\\epub转txt.txt")
+        print(f"epub->txt 处理完成！结果已保存到: {output_file}")
+        return output_file
 
     def txt_to_short_long(self, input_path, output_files):
         """
         第二个部分: 将txt文件转成短词组和长词组词库
         """
-        # self.split(output_files['short'],output_files['long'])
         print("\n*** 第二部分: 将txt文件转成短词组和长词组词库 ***\n")
         # 第二步：执行短句拆分
         print("开始短句拆分...")
-        self.split_into_short_sentences(input_path, output_files['short'])
+        short_path = self.split_into_short_sentences(input_path, output_files['short'])
         print(f"短句拆分完成，结果保存在: {output_files['short']}")
 
         # 第三步：执行长句拆分
         print("开始长句拆分...")
-        self.split_into_long_sentences(input_path, output_files['long'])
+        long_path = self.split_into_long_sentences(input_path, output_files['long'])
         print(f"长句拆分完成，结果保存在: {output_files['long']}")
+        
+        result = [short_path, long_path]
+        if self.is_web:
+            return result
+        return result
 
     def txt_short_long_to_rime(self, output_files):
         """
-        第三个部分: 将txt原版、短词组、长词组词库转成rime格式，并替换"俞"字拼音为"shu"
+        第三个部分: 将txt原版、短词组、长词组词库转成rime格式
         """
-        print("\n*** 第三部分: 将txt原版、短词组、长词组词库转成rime格式，并替换俞字拼音为shu ***\n")
-        # 第四步：生成rime格式
+        print("\n*** 第三部分: 将txt原版、短词组、长词组词库转成rime格式***\n")
         print("开始生成rime格式文件...")
-        self.to_rime(output_files['clean'], "clean_rime")
-        self.to_rime(output_files['short'], "short_rime")
-        self.to_rime(output_files['long'], "long_rime")
         
-        # # 第五步：替换拼音，目前有bug
-        # print("开始替换拼音...")
-        # self.replace_pinyin(output_files['clean'], output_files['clean'])
-        # self.replace_pinyin(output_files['short'], output_files['short'])
-        # self.replace_pinyin(output_files['long'], output_files['long'])
-        print("所有处理完成！")
+        output_short_time = f"{os.path.splitext(output_files['short'])[0]}_{self.current_time}{os.path.splitext(output_files['short'])[1]}"
+        output_long_time = f"{os.path.splitext(output_files['long'])[0]}_{self.current_time}{os.path.splitext(output_files['long'])[1]}"
+        
+        short_rime = self.to_rime(output_short_time, "short_rime"+self.current_time)
+        long_rime = self.to_rime(output_long_time, "long_rime"+self.current_time)
+        
+        result = [short_rime, long_rime]
+        if self.is_web:
+            return result
+        return result
 
     def replace_pinyin(self, input_path, output_path):
         return
@@ -278,50 +314,3 @@ class EpubProcessor:
                 pinyin_list[i] = 'shu'
         
         return ' '.join(pinyin_list)
-    
-    
-    # # 试图合并长短句拆分，但是可能没有必要
-    # def split(self,output_dir_short,output_dir_long):
-    #     """将内容拆分成短句和长句
-    #     Args:
-    #         output_path: 输出文件路径
-    #     """
-    #     return
-    #     """ 短句 """
-    #     epub_txt_file = os.path.join(self.output_path, "epub转txt.txt")
-    #     with open(epub_txt_file, 'r', encoding='utf-8') as f:
-    #         file_content = f.read()
-    #     # 拆分短句
-    #     split_content = re.split(r'[，。！？；：、\s\n]+', file_content)
-        
-    #     # 保存结果
-    #     with open(output_dir_short, 'w', encoding='utf-8') as output_file:
-    #         output_file.write(
-    #             "# 生成工具 https://github.com/whitewatercn/rimetool\n" +
-    #             "# 生成时间 " + current_time + "\n" +
-    #             "---\n"
-    #         )
-    #         for item in split_content:
-    #             if item:  # 避免写入空字符串
-    #                 output_file.write(item + '\n')
-
-    #     """ 长句 """
-    #     epub_txt_file = os.path.join(self.output_path, "epub转txt.txt")
-    #     with open(epub_txt_file, 'r', encoding='utf-8') as f:
-    #         file_content = f.read()
-    #     # 保存结果
-    #     with open(output_dir_long, 'w', encoding='utf-8') as output_file:
-            
-    #         output_file.write(
-    #             "# 生成工具 https://github.com/whitewatercn/rimetool\n" +
-    #             "# 生成时间 " + current_time + "\n" +
-    #             "---\n"
-    #         )
-    #         for item in file_content.split('\n'):
-    #             if item:  # 避免写入空字符串
-    #                 cleaned_item = re.sub(r'[^\w]', '', item)  # 移除标点符号和空格
-    #                 output_file.write(cleaned_item + '\n')
-    
-    #     # 使用echo命令写入文件头
-    #     header = f"# 生成工具 https://github.com/whitewatercn/rimetool\n# 生成时间 {current_time}\n---\n"
-    #     subprocess.run(f'echo "{header}" > {epub_txt_file}', shell=True)

@@ -1,10 +1,8 @@
-from datetime import datetime
 import os
-import sys
-from .rimetool_core.utils import Epub_Processor, vcf
-from .rimetool_core.utils import simple_english
-from .rimetool_core.utils import simple_chinese
-from .rimetool_core.utils import tosougou
+from rimetool_core.utils import vcf
+from rimetool_core.utils import simple_english
+from rimetool_core.utils import simple_chinese
+from rimetool_core.utils import tosougou
 import argparse
 
 help_text = """
@@ -60,22 +58,21 @@ def get_args_parser(add_help=True):
     parser.add_argument('--mode', '-m', required=False, choices=list(mode_choices.keys()))
     return parser
 
-def main(output_files=None, is_web=False):
-    current_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+def main():
     parser = get_args_parser()
     args = parser.parse_args()
-    name = ""
+    
     if not os.path.exists(args.output_path):
         os.makedirs(args.output_path)
     os.makedirs(args.output_path, exist_ok=True)
     if args.tool == 'vcf':
-        name = vcf.main(args.input_path, args.output_path, is_web)
+        vcf.main(args.input_path, args.output_path)
     elif args.tool in ['simple-english', 'se']:
-        name = simple_english.main(args.input_path, args.output_path, is_web)
+        simple_english.main(args.input_path, args.output_path)
     elif args.tool in ['simple-chinese', 'sc']:
-        name = simple_chinese.main(args.input_path, args.output_path, is_web)
+        simple_chinese.main(args.input_path, args.output_path)
     elif args.tool == 'tosougou':
-        name = tosougou.main(args.input_path, args.output_path, is_web)
+        tosogou.main(args.input_path, args.output_path)
     elif args.tool == 'epub':
         output_dir = args.output_path
         output_files = {
@@ -83,57 +80,21 @@ def main(output_files=None, is_web=False):
             'short': os.path.join(output_dir, "短句拆分.txt"),
             'long': os.path.join(output_dir, "长句拆分.txt")
         }
-        print(output_files)
-        processor = Epub_Processor.EpubProcessor(args.input_path, output_dir, output_files,current_time, is_web)
+        processor = Epub_Processor.EpubProcessor(args.input_path, output_dir, output_files)
         
         mode = mode_choices[args.mode]
         if mode == 'epub_to_txt':
-            output_file = processor.epub_to_txt()
-            if is_web:
-                return output_file
+            processor.epub_to_txt()
         elif mode == 'txt_to_short_long':
-            output_files = processor.txt_to_short_long(args.input_path, output_files)
-            if is_web:
-                return output_files
+            processor.txt_to_short_long(args.input_path, output_files)
         elif mode == 'txt_to_rime':
-            output_files = processor.txt_to_rime_all(args.input_path,output_files)
-            if is_web:
-                return output_files
+            processor.txt_to_rime_all(output_files)
         elif mode == 'epub_to_rime':
-            output_files = processor.epub_to_rime(output_files)
-            if is_web:
-                return output_files
+            processor.epub_to_rime(output_files)
         else:
             raise ValueError('请选择正确的EPUB处理模式')
     else:
         raise ValueError('请选择正确的工具。')
-    return name
-
-def main_with_args(args_list):
-    """
-    用于在GUI中调用
-    """
-    original_argv = sys.argv
-    sys.argv = [''] + args_list  # 设置命令行参数
-    try:
-        parser = get_args_parser()
-        args = parser.parse_args(args_list)
-        output_files = None
-        print("args.tool:"+args.tool)
-        if args.tool == 'epub':
-            output_dir = args.output_path
-            output_files = {
-                'clean': os.path.join(output_dir, "epub转txt.txt"),
-                'short': os.path.join(output_dir, "短句拆分.txt"),
-                'long': os.path.join(output_dir, "长句拆分.txt")
-            }
-            sys.argv = [''] + args_list 
-        
-        # 标记这是从web界面调用的
-        result = main(output_files, is_web=True)
-        return result
-    finally:
-        sys.argv = original_argv  # 恢复原始的命令行参数
 
 if __name__ == "__main__":
     main()
