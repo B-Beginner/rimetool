@@ -400,7 +400,7 @@
             const timeoutId = setTimeout(() => controller.abort(), 600000); // 10分钟超时，处理大文件
             
             // 先测试服务器是否可用
-            fetch('https://imtool.beginner.center:5001/', { 
+            fetch('0.0.0.0:5001/', { 
                 method: 'GET',
                 // signal: AbortSignal.timeout(5001), // 5秒超时
                 mode: 'cors'
@@ -423,7 +423,7 @@
             // 主请求函数
             function sendMainRequest() {
                 // 发送请求
-                fetch('https://imtool.beginner.center:5001/process', {
+                fetch('0.0.0.0:5001/process', {
                     method: 'POST',
                     body: formData,
                     signal: controller.signal,
@@ -539,7 +539,7 @@
                     if (err.name === 'AbortError') {
                         errorMsg = '请求超时（10分钟），服务器处理时间过长';
                     } else if (err instanceof TypeError && err.message.includes('Failed to fetch')) {
-                        errorMsg = '无法连接到服务器(https://imtool.beginner.center:5001)，请检查服务器是否运行';
+                        errorMsg = '无法连接到服务器(0.0.0.0:5001)，请检查服务器是否运行';
                         // 尝试提供更多调试信息
                         log('尝试连接服务器失败，请确保：', 'error');
                         log('1. Python服务器正在运行 (python new_app.py)', 'error');
@@ -569,7 +569,7 @@
                                     return obj;
                                 }, {}),
                             server: {
-                                url: 'https://imtool.beginner.center:5001',
+                                url: '0.0.0.0:5001',
                                 endpoint: '/process',
                                 method: 'POST'
                             }
