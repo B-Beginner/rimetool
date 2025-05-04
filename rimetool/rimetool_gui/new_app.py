@@ -359,8 +359,8 @@ def get_website_config():
 if __name__ == '__main__':
     logger.info("启动Flask应用")
     # 在生产环境中运行，不使用自动重启
-    app.run(debug=False, host='https://imtool.beginner.center', port=5001)
+    app.run(debug=False, host='0.0.0.0', port=5001)
     
     # 或者，如果您需要调试功能但不需要自动重启：
     # from werkzeug.serving import run_simple
-    # run_simple('https://imtool.beginner.center', 5001, app, use_reloader=False, use_debugger=True)
+    # run_simple('0.0.0.0', 5001, app, use_reloader=False, use_debugger=True)
