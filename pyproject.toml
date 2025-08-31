@@ -5,7 +5,10 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "argparse>=1.4.0",
     "bs4>=0.0.2",
+    "chardet>=5.2.0",
+    "click>=8.2.1",
     "ebooklib>=0.19",
     "flask>=3.1.2",
     "flask-cors>=6.0.1",

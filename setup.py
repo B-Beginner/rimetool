@@ -18,10 +18,13 @@ setup(
 
     ],
     keywords=['rime','input method editor tool','python'],  # 模块的关键词，使用空格分割
-    install_requires=['pypinyin',
-					  'argparse',
-					  'click',
-					  'chardet'
+    install_requires=[
+                    "argparse>=1.4.0",
+                    "chardet>=5.2.0",
+                    "click>=8.2.1",
+                    "ebooklib>=0.19",
+                    "pypinyin>=0.55.0",
+                    "zipp>=3.23.0"
 					  ], # 依赖模块
     python_requires='>=3.0',  # 模块支持的Python版本
     entry_points={  # 新建终端命令并链接到模块函数
