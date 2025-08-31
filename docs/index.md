@@ -36,12 +36,17 @@ features:
     title: 开源免费
     details: 完全开源，MIT 许可证，永久免费使用
 ---
-
 ## 立即开始
 
 ### 🌐 Web 在线工具（推荐）
 
 访问在线工具，无需安装即可使用：
+
+
+<div style="text-align: center; margin: 2rem 0;">
+<a href="/quickstart">立即使用 Web 工具 →</a> | <a href="/api">API 文档</a></p>
+</div>
+
 
 **[立即使用 Web 工具 →](https://your-domain.com)**
 
@@ -70,13 +75,13 @@ docker run -p 5001:5001 your-registry/rimetool:latest
 
 ## 主要功能
 
-| 工具命令 | 功能描述 |
-|---------|---------|
-| `vcf` | 将联系人文件（.vcf）转换为 Rime 词库 |
-| `simple-english` | 将英文单词文件转换为 Rime 词库 |
-| `simple-chinese` | 将中文词组文件转换为 Rime 词库 |
-| `tosougou` | 将 Rime 词库转换为搜狗 TXT 词库 |
-| `epub` | 将 EPUB 电子书转换为 Rime 词库 |
+| 工具命令           | 功能描述                             |
+| ------------------ | ------------------------------------ |
+| `vcf`            | 将联系人文件（.vcf）转换为 Rime 词库 |
+| `simple-english` | 将英文单词文件转换为 Rime 词库       |
+| `simple-chinese` | 将中文词组文件转换为 Rime 词库       |
+| `tosougou`       | 将 Rime 词库转换为搜狗 TXT 词库      |
+| `epub`           | 将 EPUB 电子书转换为 Rime 词库       |
 
 ## 快速示例
 
