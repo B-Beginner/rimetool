@@ -2,12 +2,12 @@
 
 一些rime使用工具
 
-| 使用                                                    | 功能简介                                                     |
-| ------------------------------------------------------- | ------------------------------------------------------------ |
-| rimetool --input-path 你的文件路径 --tool vcf           | 用于将联系人文件（.vcf）导出为rime词库                       |
+| 使用                                                    | 功能简介                                                                 |
+| ------------------------------------------------------- | ------------------------------------------------------------------------ |
+| rimetool --input-path 你的文件路径 --tool vcf           | 用于将联系人文件（.vcf）导出为rime词库                                   |
 | rimetool --input-path 你的文件路径 --tool singleword    | 将单个词（如hello）或单个词组（如hello world）文件（.txt）导出为rime词库 |
-| rimetool --input-path 你的文件路径 --tool singlechinese | 将单个中文词组（如你好）文件（.txt）导出为rime词库           |
-| rimetool --input-path 你的文件路径 --tool tosougou      | 将rime词库导出为搜狗txt词库                                  |
+| rimetool --input-path 你的文件路径 --tool singlechinese | 将单个中文词组（如你好）文件（.txt）导出为rime词库                       |
+| rimetool --input-path 你的文件路径 --tool tosougou      | 将rime词库导出为搜狗txt词库                                              |
 
 # 安装
 
@@ -70,6 +70,16 @@ helloworld	helloworld	1
 
 这样，你就得到了这份vcf通讯录文件中的人名的词库了，快快导入你的rime中吧！
 
+# 部署本项目
+
+本项目通过[uv](https://docs.astral.sh/uv/)管理包依赖及虚拟环境，使用非常简单（[点击查看教程](https://forum.beginner.center/t/topic/2137))，下载仓库后，在仓库所在路径运行下方代码，就大功告成了🤟
+
+```
+pip install uv #安装uv
+uv init #初始化uv
+uv sync #通过uv安装本项目所需的全部依赖
+```
+
 # 文件结构
 
 ```.
@@ -83,13 +93,12 @@ helloworld	helloworld	1
 └── setup.py #pypi相关配置文件
 ```
 
-
-
 # 感谢
 
 [manateelazycat](https://manateelazycat.github.io/)：作为开源过来人提供了思想上的帮助
+
 [JyiDeng](https://github.com/JyiDeng)：核心开发者
+
 # 更多
 
 [中州韵助手](https://github.com/yanhuacuo/rimetool)：一款rime可视化配置工具，很巧也叫rimetool
-
