@@ -42,13 +42,9 @@ features:
 
 访问在线工具，无需安装即可使用：
 
-
-<div style="text-align: center; margin: 2rem 0;">
-<a href="/quickstart">立即使用 Web 工具 →</a> | <a href="/api">API 文档</a></p>
+<div style="text-align: left; margin: 2rem 0;">
+<a href="/quickstart">立即使用 Web 工具 →</a>
 </div>
-
-
-**[立即使用 Web 工具 →](https://your-domain.com)**
 
 ### 📦 安装使用
 
