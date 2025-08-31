@@ -70,6 +70,16 @@ helloworld	helloworld	1
 
 这样，你就得到了这份vcf通讯录文件中的人名的词库了，快快导入你的rime中吧！
 
+# 部署本项目
+
+本项目通过[uv](https://docs.astral.sh/uv/)管理包依赖及虚拟环境，使用非常简单（[点击查看教程](https://forum.beginner.center/t/topic/2137))，下载仓库后，在仓库所在路径运行下方代码，就大功告成了🤟
+
+```
+pip install uv #安装uv
+uv init #初始化uv
+uv sync #通过uv安装本项目所需的全部依赖
+```
+
 # 文件结构
 
 ```.
