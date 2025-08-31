@@ -10,8 +10,8 @@ dependencies = [
     "chardet>=5.2.0",
     "click>=8.2.1",
     "ebooklib>=0.19",
-    "flask>=3.1.2",
-    "flask-cors>=6.0.1",
+    "flask>=3.1.2",  #rimetool-gui使用
+    "flask-cors>=6.0.1", #rimetool-gui使用
     "pypinyin>=0.55.0",
     "zipp>=3.23.0",
 ]
