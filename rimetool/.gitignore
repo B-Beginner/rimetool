@@ -1,8 +1,8 @@
+# 打包缓存
 rimetool.egg-info/
 build/
 dist/
 __pycache__/
-.DS_Store
 rimetool_cache/
 
 # 测试文件
@@ -11,7 +11,11 @@ test/
 *dict.yaml
 *output*
 
+# 日志文件
+rimetool/rimetool_gui/logs/rimetool_gui.log
 
 # 环境
 .venv/
 .vscode/
+
+# 其他
