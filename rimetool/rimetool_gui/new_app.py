@@ -9,11 +9,21 @@ import shutil
 from flask_cors import CORS  # 导入 CORS
 from datetime import datetime, time
 from io import BytesIO
-from gui_config import GUIConfig  # Import the configuration class
+
+# 导入配置文件
+try:
+    from .gui_config import GUIConfig
+except ImportError:
+    from gui_config import GUIConfig
 """
 使用方法：运行本文件，然后打开new_index.html，右键点击 Open in Browser 预览选项
 """
-app = Flask(__name__, static_folder='templates')
+
+# 获取模板文件夹的绝对路径
+template_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'templates')
+static_dir = template_dir  # 将static也指向templates目录
+
+app = Flask(__name__, template_folder=template_dir, static_folder=static_dir)
 # 启用 CORS
 # CORS(app, origins="http://localhost:5500")  # 允许来自 http://localhost:5500 的请求
 CORS(app, origins="*") 
@@ -52,15 +62,23 @@ try:
 except ImportError as e:
     logger.error(f"导入 rimetool_main 失败: {str(e)}\n{traceback.format_exc()}")
     try:
-        # 尝试不同的导入路径
-        sys.path.insert(0, os.path.dirname(current_dir))
-        from main import main_with_args as rimetool_main
-        logger.info("使用备用路径成功导入 rimetool_main")
+        # 尝试相对导入
+        from ..main import main_with_args as rimetool_main
+        logger.info("使用相对导入成功导入 rimetool_main")
     except ImportError as e2:
-        logger.error(f"使用备用路径导入 rimetool_main 也失败: {str(e2)}\n{traceback.format_exc()}")
-        def rimetool_main(args):
-            logger.error(f"无法导入真正的 rimetool_main，使用模拟函数。参数: {args}")
-            return "导入模块失败，无法处理文件"
+        logger.error(f"使用相对导入 rimetool_main 也失败: {str(e2)}")
+        try:
+            # 尝试添加父目录到路径
+            parent_parent_dir = os.path.dirname(parent_dir)
+            if parent_parent_dir not in sys.path:
+                sys.path.insert(0, parent_parent_dir)
+            from rimetool.main import main_with_args as rimetool_main
+            logger.info("使用父父目录路径成功导入 rimetool_main")
+        except ImportError as e3:
+            logger.error(f"最终导入 rimetool_main 失败: {str(e3)}\n{traceback.format_exc()}")
+            def rimetool_main(args):
+                logger.error(f"无法导入真正的 rimetool_main，使用模拟函数。参数: {args}")
+                return "导入模块失败，无法处理文件"
 
 UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'uploads')
 OUTPUT_FOLDER = os.path.join(os.path.dirname(__file__), 'outputs')
