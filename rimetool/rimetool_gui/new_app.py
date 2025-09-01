@@ -6,7 +6,6 @@ import sys
 import json
 import zipfile  # 确保在顶部导入
 import shutil
-from rimetool.main import main_with_args as rimetool_main
 from flask_cors import CORS  # 导入 CORS
 from datetime import datetime, time
 from io import BytesIO
@@ -20,11 +19,15 @@ app = Flask(__name__, static_folder='templates')
 CORS(app, origins="*") 
 
 # 配置详细的日志
+log_dir = os.path.join(os.path.dirname(__file__), 'logs')
+os.makedirs(log_dir, exist_ok=True)
+log_file = os.path.join(log_dir, 'rimetool_gui.log')
+
 logging.basicConfig(
     level=logging.DEBUG,  # 改为 DEBUG 级别以获取更多信息
     format='%(asctime)s - %(levelname)s - [%(filename)s:%(lineno)d] - %(message)s',
     handlers=[
-        logging.FileHandler(r"rimetool/rimetool_gui/rimetool_gui.log"),
+        logging.FileHandler(log_file),
         logging.StreamHandler(sys.stdout)
     ]
 )
@@ -358,9 +361,11 @@ def get_website_config():
 
 if __name__ == '__main__':
     logger.info("启动Flask应用")
-    # 在生产环境中运行，不使用自动重启
-    app.run(debug=False, host='0.0.0.0', port=5001)
     
-    # 或者，如果您需要调试功能但不需要自动重启：
-    # from werkzeug.serving import run_simple
-    # run_simple('0.0.0.0', 5001, app, use_reloader=False, use_debugger=True)
+    # 从环境变量读取配置
+    host = os.environ.get('FLASK_HOST', '0.0.0.0')
+    port = int(os.environ.get('FLASK_PORT', 5001))
+    debug = os.environ.get('FLASK_DEBUG', '0') == '1'
+    
+    # 启动Flask应用
+    app.run(debug=debug, host=host, port=port)

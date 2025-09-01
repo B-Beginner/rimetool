@@ -1,6 +1,10 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "rimetool"
-version = "2.0.5"
+version = "2.1.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -10,11 +14,14 @@ dependencies = [
     "chardet>=5.2.0",
     "click>=8.2.1",
     "ebooklib>=0.19",
-    "flask>=3.1.2",  #rimetool-gui使用
+    "flask>=3.1.2", #rimetool-gui使用
     "flask-cors>=6.0.1", #rimetool-gui使用
     "pypinyin>=0.55.0",
     "zipp>=3.23.0",
 ]
+
+[project.scripts]
+rimetool = "rimetool.main:main"
 
 #备注：以下代码为修改至清华源下载pip包，如果不需要可以注释掉
 [[index]]

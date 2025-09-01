@@ -53,14 +53,62 @@ mode_choices = {
 }
 
 def get_args_parser(add_help=True):
-    parser = argparse.ArgumentParser(description=help_text, add_help=add_help, formatter_class=argparse.RawTextHelpFormatter)
-    parser.add_argument('--input-path', '-i', required=True, type=str)
-    parser.add_argument('--output-path', '-o', default='./rimetool_output', type=str)
-    parser.add_argument('--tool', '-t', required=True, choices=['vcf','simple-english','se','simple-chinese','sc','tosougou','epub','hello'], type=str)
-    parser.add_argument('--mode', '-m', required=False, choices=list(mode_choices.keys()))
-    return parser
+    # 检查是否有 'web' 子命令
+    if len(sys.argv) > 1 and sys.argv[1] == 'web':
+        # 为 web 命令创建特殊的解析器
+        parser = argparse.ArgumentParser(description="启动rimetool网页界面", add_help=add_help)
+        parser.add_argument('command', choices=['web'], help='启动网页界面')
+        parser.add_argument('--host', default='0.0.0.0', help='服务器主机地址 (默认: 0.0.0.0)')
+        parser.add_argument('--port', default=5001, type=int, help='服务器端口 (默认: 5001)')
+        parser.add_argument('--debug', action='store_true', help='启用调试模式')
+        return parser
+    else:
+        # 原有的解析器
+        parser = argparse.ArgumentParser(description=help_text, add_help=add_help, formatter_class=argparse.RawTextHelpFormatter)
+        parser.add_argument('--input-path', '-i', required=True, type=str)
+        parser.add_argument('--output-path', '-o', default='./rimetool_output', type=str)
+        parser.add_argument('--tool', '-t', required=True, choices=['vcf','simple-english','se','simple-chinese','sc','tosougou','epub','hello'], type=str)
+        parser.add_argument('--mode', '-m', required=False, choices=list(mode_choices.keys()))
+        return parser
 
 def main(output_files=None, is_web=False):
+    # 检查是否是 web 命令
+    if len(sys.argv) > 1 and sys.argv[1] == 'web':
+        # 启动网页界面
+        parser = get_args_parser()
+        args = parser.parse_args()
+        
+        try:
+            # 直接运行 new_app.py
+            import subprocess
+            import os
+            
+            # 获取 new_app.py 的路径
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            new_app_path = os.path.join(current_dir, 'rimetool_gui', 'new_app.py')
+            
+            print(f"启动rimetool网页界面...")
+            print(f"访问地址: http://{args.host}:{args.port}")
+            print("按 Ctrl+C 停止服务器")
+            
+            # 设置环境变量
+            env = os.environ.copy()
+            env['FLASK_HOST'] = args.host
+            env['FLASK_PORT'] = str(args.port)
+            if args.debug:
+                env['FLASK_DEBUG'] = '1'
+            
+            # 运行 new_app.py
+            subprocess.run([sys.executable, new_app_path], env=env, cwd=current_dir)
+            
+        except KeyboardInterrupt:
+            print("\n网页服务器已停止")
+        except Exception as e:
+            print(f"启动网页服务器失败: {e}")
+            sys.exit(1)
+        return
+    
+    # 原有的处理逻辑
     current_time = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
     parser = get_args_parser()
     args = parser.parse_args()
