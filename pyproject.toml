@@ -16,7 +16,8 @@ dependencies = [
     "zipp>=3.23.0",
 ]
 
-
+#备注：以下代码为修改至清华源下载pip包，如果不需要可以注释掉
 [[index]]
-url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple/"
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple/"  
 default = true
+#备注结束
