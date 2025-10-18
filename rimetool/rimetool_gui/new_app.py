@@ -132,30 +132,16 @@ if parent_dir not in sys.path:
     sys.path.insert(0, parent_dir)
     logger.info(f"已添加到sys.path: {parent_dir}")
 
-# 确保能够正确导入rimetool_main
+# 确保能够正确导入 rimetool_main（路径已固定，移除冗余回退逻辑）
 try:
     from rimetool.main import main_with_args as rimetool_main
     logger.info("成功导入 rimetool_main")
 except ImportError as e:
-    logger.error(f"导入 rimetool_main 失败: {str(e)}\n{traceback.format_exc()}")
-    try:
-        # 尝试相对导入
-        from ..main import main_with_args as rimetool_main
-        logger.info("使用相对导入成功导入 rimetool_main")
-    except ImportError as e2:
-        logger.error(f"使用相对导入 rimetool_main 也失败: {str(e2)}")
-        try:
-            # 尝试添加父目录到路径
-            parent_parent_dir = os.path.dirname(parent_dir)
-            if parent_parent_dir not in sys.path:
-                sys.path.insert(0, parent_parent_dir)
-            from rimetool.main import main_with_args as rimetool_main
-            logger.info("使用父父目录路径成功导入 rimetool_main")
-        except ImportError as e3:
-            logger.error(f"最终导入 rimetool_main 失败: {str(e3)}\n{traceback.format_exc()}")
-            def rimetool_main(args):
-                logger.error(f"无法导入真正的 rimetool_main，使用模拟函数。参数: {args}")
-                return "导入模块失败，无法处理文件"
+    logger.error(f"导入 rimetool.main:main_with_args 失败（ImportError），请确认已正确安装并在同一环境中运行。\n{str(e)}\n{traceback.format_exc()}")
+    raise
+except Exception as e:
+    logger.error(f"导入 rimetool.main:main_with_args 时发生非导入错误: {str(e)}\n{traceback.format_exc()}")
+    raise
 
 UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), 'uploads')
 OUTPUT_FOLDER = os.path.join(os.path.dirname(__file__), 'outputs')
@@ -291,17 +277,22 @@ def process_file():
                     )
                     # 设置Content-Disposition，兼容所有浏览器
                     # 参考: https://www.cnblogs.com/PengZhao-Mr/p/18489371
-                    try:
-                        # 检查文件名是否只包含ASCII字符
-                        original_filename.encode('ascii')
-                        response.headers["Content-Disposition"] = f'attachment; filename="{original_filename}"'
-                        logger.info(f"文件名使用ASCII编码: {original_filename}")
-                    except UnicodeEncodeError:
-                        # 包含中文，使用RFC 2231标准格式
-                        # filename*=UTF-8''编码后的文件名
-                        encoded_filename = quote(original_filename)
-                        response.headers["Content-Disposition"] = f"attachment; filename*=UTF-8''{encoded_filename}"
-                        logger.info(f"设置UTF-8编码文件名: {encoded_filename}")
+                    # 仅使用 UTF-8 编码的文件名以简化兼容逻辑
+                    encoded_filename = quote(original_filename)
+                    response.headers["Content-Disposition"] = f"attachment; filename*=UTF-8''{encoded_filename}"
+                    logger.info(f"设置UTF-8编码文件名: {encoded_filename}")
+                    # 原先的 ASCII 优先逻辑已注释：
+                    # 由于前后端均已全量采用 UTF-8，且现代浏览器均支持 RFC 5987/2231 的 filename*，
+                    # 暂时去掉 ASCII fallback 逻辑，避免分支复杂度与潜在不一致。
+                    # 若未来需要兼容极老旧浏览器（仅识别 filename 的 ASCII），可恢复以下逻辑：
+                    # try:
+                    #     original_filename.encode('ascii')
+                    #     response.headers["Content-Disposition"] = f'attachment; filename="{original_filename}"'
+                    #     logger.info(f"文件名使用ASCII编码: {original_filename}")
+                    # except UnicodeEncodeError:
+                    #     encoded_filename = quote(original_filename)
+                    #     response.headers["Content-Disposition"] = f"attachment; filename*=UTF-8''{encoded_filename}"
+                    #     logger.info(f"设置UTF-8编码文件名: {encoded_filename}")
                     
                     response.headers["Content-Type"] = "application/octet-stream"
                     response.headers["X-Content-Type-Options"] = "nosniff"
@@ -354,17 +345,22 @@ def process_file():
                 response.headers['Content-Type'] = 'application/zip'
                 
                 # 设置Content-Disposition，使用双格式兼容所有浏览器
-                try:
-                    # 检查文件名是否只包含ASCII字符
-                    safe_filename.encode('ascii')
-                    response.headers['Content-Disposition'] = f'attachment; filename="{safe_filename}"'
-                    logger.info(f"文件名使用ASCII编码: {safe_filename}")
-                except UnicodeEncodeError:
-                    # 包含中文，使用RFC 2231标准格式
-                    # filename*=UTF-8''编码后的文件名
-                    encoded_filename = quote(safe_filename)
-                    response.headers['Content-Disposition'] = f"attachment; filename*=UTF-8''{encoded_filename}"
-                    logger.info(f"设置UTF-8编码文件名: {encoded_filename}")
+                # 仅使用 UTF-8 编码的文件名以简化兼容逻辑
+                encoded_filename = quote(safe_filename)
+                response.headers['Content-Disposition'] = f"attachment; filename*=UTF-8''{encoded_filename}"
+                logger.info(f"设置UTF-8编码文件名: {encoded_filename}")
+                # 原先的 ASCII 优先逻辑已注释：
+                # 由于前后端均已全量采用 UTF-8，且现代浏览器均支持 RFC 5987/2231 的 filename*，
+                # 暂时去掉 ASCII fallback 逻辑，避免分支复杂度与潜在不一致。
+                # 若未来需要兼容极老旧浏览器（仅识别 filename 的 ASCII），可恢复以下逻辑：
+                # try:
+                #     safe_filename.encode('ascii')
+                #     response.headers['Content-Disposition'] = f'attachment; filename="{safe_filename}"'
+                #     logger.info(f"文件名使用ASCII编码: {safe_filename}")
+                # except UnicodeEncodeError:
+                #     encoded_filename = quote(safe_filename)
+                #     response.headers['Content-Disposition'] = f"attachment; filename*=UTF-8''{encoded_filename}"
+                #     logger.info(f"设置UTF-8编码文件名: {encoded_filename}")
                 
                 # 确保前端JavaScript可以访问Content-Disposition头
                 response.headers['Access-Control-Expose-Headers'] = 'Content-Disposition'
@@ -426,18 +422,18 @@ def get_website_config():
     })
 
 
-    @app.route('/ads.txt', methods=['GET'])
-    def serve_ads_txt():
-        """Serve ads.txt content configured in GUIConfig."""
-        content = str(getattr(GUIConfig, "ADS_TXT_LINES", ""))
+@app.route('/ads.txt', methods=['GET'])
+def serve_ads_txt():
+    """Serve ads.txt content configured in GUIConfig."""
+    content = str(getattr(GUIConfig, "ADS_TXT_LINES", ""))
 
-        if not content:
-            return Response("", mimetype='text/plain; charset=utf-8')
+    if not content:
+        return Response("", mimetype='text/plain; charset=utf-8')
 
-        if not content.endswith("\n"):
-            content += "\n"
+    if not content.endswith("\n"):
+        content += "\n"
 
-        return Response(content, mimetype='text/plain; charset=utf-8')
+    return Response(content, mimetype='text/plain; charset=utf-8')
 
 if __name__ == '__main__':
     logger.info("启动Flask应用")
